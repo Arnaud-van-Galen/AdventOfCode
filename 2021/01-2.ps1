@@ -2,14 +2,14 @@
 [int]$IncreaseCount=0
 [int]$GroupSize=3
 
-#$Report=199,200,208,210,200,207,240,269,260,263
+# $Report=199,200,208,210,200,207,240,269,260,263
 $Report=Get-Content .\01-1-Input.txt
 
 for ($i = $GroupSize ; $i -lt $Report.Count ; $i++) {
     if (!$PrevReportValue) { $PrevReportValue = $Report[($i-$GroupSize)..($i-1)] | Measure-Object -Sum | Select-Object -expand Sum }
     $ReportValue = $Report[($i-$GroupSize+1)..($i)] | Measure-Object -Sum | Select-Object -expand Sum
     if ($PrevReportValue -lt $ReportValue) {
-        #Write-Host "From $PrevReportValue to $ReportValue is an increase"
+        # Write-Host "From $PrevReportValue to $ReportValue is an increase"
         $IncreaseCount++
     }
     $PrevReportValue=$ReportValue
