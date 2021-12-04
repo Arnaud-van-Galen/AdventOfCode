@@ -6,17 +6,17 @@ function Find-MostCommonOrMatching { param( [string] $findvalue, [string[]] $rep
     for ($i = 0 ; $i -lt $DiagLength ; $i++) {
         [string[]] $workingReport = $report | Where-Object { $_.substring($i, 1) -eq $findvalue }
         if ($findvalue -eq "1") {
-            if ($workingReport.Length / $report.Length -lt 1/2) {
+            if ($workingReport.Count / $report.Count -lt 1/2) {
                 $workingReport = Compare-Object $report $workingReport -PassThru
             }
         } else {
-            if ($workingReport.Length / $report.Length -gt 1/2) {
+            if ($workingReport.Count / $report.Count -gt 1/2) {
                 $workingReport = Compare-Object $report $workingReport -PassThru
             }
         }
         $report = $workingReport
         # Write-Host $i, $report
-        if ($report.Length -eq 1) { return [Convert]::ToInt32($report, 2) }
+        if ($report.Count -eq 1) { return [Convert]::ToInt32($report, 2) }
     }
 }
 
