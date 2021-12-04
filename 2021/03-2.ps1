@@ -2,8 +2,7 @@
 [string[]] $Report = Get-Content .\03-1-Input.txt
 
 function Find-MostCommonOrMatching { param( [string] $findvalue, [string[]] $report )
-    [int] $DiagLength = $report[0].Length
-    for ($i = 0 ; $i -lt $DiagLength ; $i++) {
+    for ($i = 0 ; $i -lt $report[0].Length ; $i++) {
         [string[]] $workingReport = $report | Where-Object { $_.substring($i, 1) -eq $findvalue }
         if ($findvalue -eq "1") {
             if ($workingReport.Count / $report.Count -lt 1/2) {
