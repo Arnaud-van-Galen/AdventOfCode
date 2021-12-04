@@ -7,11 +7,11 @@ function Find-MostCommonOrMatching { param( [string] $findvalue, [string[]] $rep
         [string[]] $workingReport = $report | Where-Object { $_.substring($i, 1) -eq $findvalue }
         if ($findvalue -eq "1") {
             if ($workingReport.Length / $report.Length -lt 1/2) {
-                $workingReport = $report | Where-Object { $_ -notin $workingReport }
+                $workingReport = Compare-Object $report $workingReport -PassThru
             }
         } else {
             if ($workingReport.Length / $report.Length -gt 1/2) {
-                $workingReport = $report | Where-Object { $_ -notin $workingReport }
+                $workingReport = Compare-Object $report $workingReport -PassThru
             }
         }
         $report = $workingReport

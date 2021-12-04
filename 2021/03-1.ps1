@@ -6,7 +6,7 @@
 [int] $DiagLength = $Report[0].Length
 
 for ($i = 0 ; $i -lt $DiagLength ; $i++) {
-    if ( ($Report | Where-Object { $_.substring($i, 1) -eq "1" } ).Length / $Report.Length -gt 1/2) {
+    if ( ($Report.Substring($i, 1) | Measure-Object -Average).Average -gt 1/2) {
         $GammaRate += [math]::Pow(2, $DiagLength -1 -$i)
     } else {
         $EpsilonRate += [math]::Pow(2, $DiagLength -1 -$i)
