@@ -1,18 +1,21 @@
+[System.Collections.ArrayList] $BingoCards = @()
+[string[]] $BingoOrder = @()
+[int] $BingoSize = 0
+$Bingo = $false
+
 # [string[]] $BingoInput = Get-Content .\04-1-Demo-Input.txt
 [string[]] $BingoInput = Get-Content .\04-1-Input.txt
-[string[]] $BingoOrder = $BingoInput[0].Split(",")
-[System.Collections.ArrayList] $BingoCards = @()
 
 for ($i = 1 ; $i -lt $BingoInput.Count ; $i++) {
     if ($BingoInput[$i] -eq "") {
-        $BingoCards.Add([string[]] @()) | Out-Null
+        $BingoCards.Add( [string[]] @() ) | Out-Null
     } else {
         $BingoCards[-1] += $BingoInput[$i].Split(" ", [System.StringSplitOptions]::RemoveEmptyEntries)
     }
 }
-[int] $BingoSize = [math]::Sqrt($BingoCards[0].Count)
 
-$Bingo = $false
+$BingoOrder = $BingoInput[0].Split(",")
+$BingoSize = [math]::Sqrt($BingoCards[0].Count)
 foreach ($BingoCallNumber in $BingoOrder) {
     foreach ($BingoCard in $BingoCards) {
         # All fields in the BingoCard should have a value 0 and up.
@@ -30,7 +33,7 @@ foreach ($BingoCallNumber in $BingoOrder) {
                 for ($i = 0 ; $i -lt $BingoCard.Count ; $i++) {
                     if ($i % $BingoSize -eq $HitColumn) { $HitColumnSum += $BingoCard[$i] }
                 }
-                # ToDo: Improve the above loop with Object.Where like $BingoCard.Where({ $_.Rank % $BingoSize -eq $HitColumn })
+                # ToDo: Improve the above loop for calculating HitColumnSum with Object.Where like $BingoCard.Where({ $_.Rank % $BingoSize -eq $HitColumn })
                 if ($HitColumnSum + $BingoSize -eq 0) { $Bingo = $true }
                 if ($Bingo) {
                     Write-Host "Bingo on Card $BingoCard after $BingoCallNumber"

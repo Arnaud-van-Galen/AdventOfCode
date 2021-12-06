@@ -1,8 +1,10 @@
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+
+[System.Collections.ArrayList] $VentPoints = @()
+
 # [string[]] $VentsInput = Get-Content .\05-1-Demo-Input.txt
 [string[]] $VentsInput = Get-Content .\05-1-Input.txt
 
-[System.Collections.ArrayList] $VentPoints = @()
 foreach ($LineOfVents in $VentsInput) {
     $x1, $y1, $x2, $y2 = [int[]] $LineOfVents.Split(", ->".ToCharArray(), [System.StringSplitOptions]::RemoveEmptyEntries)
     if ($x1 -eq $x2) {
@@ -13,9 +15,9 @@ foreach ($LineOfVents in $VentsInput) {
         for ( $i = $x1 ; $i -le $x2 ; $i++) { $VentPoints.Add("" + $i + "-" + $y1) | Out-Null }
     }
 }
-Write-Host "Time for finding all VentPoints: ", $stopwatch.Elapsed.TotalSeconds
+Write-Host "Time for finding all VentPoints:", $stopwatch.Elapsed.TotalSeconds
 
 $stopwatch.Restart()
 ($VentPoints | Group-Object | Where-Object { $_.Count -ge 2 }).Count
-Write-Host "Time for finding the amount of dangerous VentPoints with Group-Object and Where-Object: ", $stopwatch.Elapsed.TotalSeconds
+Write-Host "Time for finding the amount of dangerous VentPoints with Group-Object and Where-Object:", $stopwatch.Elapsed.TotalSeconds
 # Correct answer = 8111 in 0.23 + 1.25 seconds
