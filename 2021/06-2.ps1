@@ -1,6 +1,8 @@
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 # $AgesInput = 3,4,3,1,2
 $AgesInput = [int[]](Get-Content .\06-1-Input.txt).Split(",")
+# ToDo: Dit stuk om te zorgen dat een readonly array met missende waarden zoals (1*1,1*2,2*3,1*4) wordt omgevormd naar een 
+# Bewerkbare array met (0,1,1,2,1,0,0,0,0,0) moet simpeler kunnen 
 $AgesInputGrouped = $AgesInput | Group-Object -NoElement
 $AllAgesCount = [Object[]]::new(9)
 for ([int] $i = 0 ; $i -le 8 ; $i++) {
