@@ -44,4 +44,4 @@ $dangerous
 Write-Host "Time for finding the amount of dangerous VentPoints with for: ", $stopwatch.Elapsed.TotalSeconds
 # This is almost as fast as the foreach, but even if you hardcode the $VentPoints.Count to 1000000 it is still slower
 
-# 22088 in 0.09 + 0.05 seconds (foreach) or 0.07 seconds (for) or 1.16 seconds (.Where)
+# Correct answer = 22088 in 0.09 + 0.05 seconds (foreach) or 0.07 seconds (for) or 1.16 seconds (.Where)

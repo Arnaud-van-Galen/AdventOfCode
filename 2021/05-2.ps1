@@ -28,4 +28,4 @@ Write-Host "Time for finding all VentPoints: ", $stopwatch.Elapsed.TotalSeconds
 $stopwatch.Restart()
 ($VentPoints | Group-Object | Where-Object { $_.Count -ge 2 }).Count
 Write-Host "Time for finding the amount of dangerous VentPoints with Group-Object and Where-Object: ", $stopwatch.Elapsed.TotalSeconds
-# 22088 in 0.40 + 2.09 seconds
+# Correct answer = 22088 in 0.40 + 2.09 seconds

@@ -13,4 +13,5 @@ for ($i = 0 ; $i -lt $DiagLength ; $i++) {
     }
 }
 Write-Host ($GammaRate * $EpsilonRate)
+# Correct answer = 749376
 # Or don't calculate $EpsilonRate at all but just do Write-Host ($GammaRate * ([math]::Pow(2, $DiagLength) -1 -$GammaRate))

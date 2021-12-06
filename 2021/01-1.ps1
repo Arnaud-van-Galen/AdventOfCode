@@ -12,3 +12,4 @@ foreach ($ReportValue in $Report) {
     $PrevReportValue=$ReportValue
 }
 Write-Host "the number of times a depth measurement increases: $IncreaseCount"
+# Correct answer = 1482

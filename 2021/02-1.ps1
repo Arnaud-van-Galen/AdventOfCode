@@ -16,3 +16,4 @@ foreach($Movement in $Course) {
     #Write-Host "Horizontal: $Horizontal, Vertical: $Vertical"
 }
 Write-Host "Total movement after multiplication: $($Horizontal*$Vertical)"
+# Correct answer = 1728414

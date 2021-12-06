@@ -35,6 +35,7 @@ foreach ($BingoCallNumber in $BingoOrder) {
                 if ($Bingo) {
                     Write-Host "Bingo on Card $BingoCard after $BingoCallNumber"
                     ($BingoCard.where({$_ -ne -1}) | Measure-Object -Sum).Sum * $BingoCallNumber
+                    # Correct answer = 21070
                     $BingoCard.Clear()
                     $Bingo = $false
                 }

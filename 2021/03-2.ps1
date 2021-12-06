@@ -22,3 +22,4 @@ function Find-MostCommonOrMatching { param( [string] $findvalue, [string[]] $rep
 $OxygenGeneratorRating = Find-MostCommonOrMatching -findvalue "1" -report $Report
 $CO2ScrubberRating = Find-MostCommonOrMatching -findvalue "0" -report $Report
 Write-Host ($OxygenGeneratorRating * $CO2ScrubberRating)
+# Correct answer = 2372923
