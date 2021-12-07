@@ -5,6 +5,8 @@ https://adventofcode.com/2021/leaderboard/private/view/676063
 Useful for measuring performance:
     $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
     $stopwatch.Elapsed
+Useful for making sure that variables are reset:
+     Get-Variable | Remove-Variable -ErrorAction SilentlyContinue
 
 Most code follows these principle:
     Files:
