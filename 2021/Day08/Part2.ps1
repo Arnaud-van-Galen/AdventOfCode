@@ -23,11 +23,11 @@ $SevenDigitDisplay.Keys.ForEach( { $SevenDigitDisplayReverted.Add($SevenDigitDis
 [int] $DisplayValueSum = 0
 foreach ($Entry in $DataInput) {
   # In part one we looked at the occurences of numbers and discovered that 1, 4, 7 (and 8) are easily discovered.
-  # By looking at the occurences of segments and combining them with the 1,4,7 knowledge we can easily built up a WireChanges Dictionary which is basically a decryption key 
-  # b occurs 6 times, e 4 times, f 9 times, a_and_c 8 times, d_and_g 7 times ( Evidence: $SevenDigitDisplay.Values.ToCharArray() | Group-Object -NoElement | Sort-Object -Property Count )
+  # By looking at the occurences of segments and combining them with the 1, 4, 7 knowledge we can easily built up a WireChanges Dictionary which is basically a decryption key 
+  # b occurs 6 times, e 4 times, f 9 times, a_and_c 8 times, d_and_g 7 times (Evidence: $SevenDigitDisplay.Values.ToCharArray() | Group-Object -NoElement | Sort-Object -Property Count)
   # This one observation removes complexity from 7! = 720 to 2! * 2! = 4
-  # a_and_c can be discovered because a is in 7 but not in 1 which leaves only 1 option for c
-  # d_and_g can be discovered because d is in 4 while g is not which leaves only 1 option for g
+  # a_and_c can be disambiguated because a is in 7 but not in 1 which leaves only 1 option for c
+  # d_and_g can be disambiguated because d is in 4 while g is not which leaves only 1 option for g
   [string[]] $SignalPatterns = $Entry.Split("|")[0].Split(" ", [System.StringSplitOptions]::RemoveEmptyEntries)
   [System.Collections.Hashtable] $WireChanges = @{}
   $One = $SignalPatterns | Where-Object -Property Length -eq $SevenDigitDisplay[1].Length
@@ -40,17 +40,18 @@ foreach ($Entry in $DataInput) {
   $WireChanges.Add("a", (Compare-Object $One.ToCharArray() $Seven.ToCharArray() -PassThru))
   $WireChanges.Add("c", ($SegmentCount | Where-Object -Property Count -eq 8 | Where-Object -Property Name -ne $WireChanges["a"]).Name)
   $WireChanges.Add("d", $Four.ToCharArray().Where( { $_ -notin $WireChanges.Values } )[0])
-  $WireChanges.Add("g", "abcdefg".ToCharArray().Where( { $_ -notin $WireChanges.Values } )[0])
+  $WireChanges.Add("g", ($SegmentCount | Where-Object -Property Count -eq 7 | Where-Object -Property Name -ne $WireChanges["d"]).Name)
+  # $WireChanges.Add("g", "abcdefg".ToCharArray().Where( { $_ -notin $WireChanges.Values } )[0])
   [System.Collections.Hashtable] $WireChangesReverted = @{}
   $WireChanges.Keys.ForEach( { $WireChangesReverted.Add($WireChanges[$_].ToString(), $_.ToString()) } )
 
   [string[]] $OutputValues = $Entry.Split("|")[1].Split(" ", [System.StringSplitOptions]::RemoveEmptyEntries)
   [string] $RevertedOutputValue = ""
   foreach ($OutputValue in $OutputValues) {
-    [string] $CorrectedOutputValue = $WireChangesReverted[($OutputValue.ToCharArray()).ForEach({$_.ToString()})] | Sort-Object | Join-String
+    [string] $CorrectedOutputValue = $WireChangesReverted[ ($OutputValue.ToCharArray()).ForEach( { $_.ToString() } ) ] | Sort-Object | Join-String
     $RevertedOutputValue += $SevenDigitDisplayReverted[$CorrectedOutputValue]
   }
   $DisplayValueSum += [int] $RevertedOutputValue
 }
 Write-Host $DisplayValueSum
-# Correct answer = ? (5353 en 61229 for testdata)
+# Correct answer = 1011785 (5353 en 61229 for testdata)
