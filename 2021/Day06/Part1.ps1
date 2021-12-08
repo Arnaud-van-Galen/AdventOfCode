@@ -1,9 +1,12 @@
+Get-Variable | Remove-Variable -ErrorAction SilentlyContinue
+[System.Console]::Clear()
+
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 [int] $Days = 80
 
 # [System.Collections.ArrayList] $AgesInput = 3,4,3,1,2
-[System.Collections.ArrayList] $AgesInput = [int[]] (Get-Content .\06-1-Input.txt).Split(",")
+[System.Collections.ArrayList] $AgesInput = [int[]] (Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop).Split(",")
 
 for ([int] $DayCounter = 1 ; $DayCounter -le $Days ; $DayCounter++) {
     [int] $NewFishDayCounter = 0
@@ -19,6 +22,6 @@ for ([int] $DayCounter = 1 ; $DayCounter -le $Days ; $DayCounter++) {
         $AgesInput.Add(8) | Out-Null
     }
     Write-Host $DayCounter, $AgesInput.Count, "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
-    # Correct answer = 351188
+    # Correct answer = 351188 (5934 for testdata)
     $stopwatch.Restart()
 }

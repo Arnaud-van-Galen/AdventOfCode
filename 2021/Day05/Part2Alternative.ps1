@@ -1,9 +1,12 @@
+Get-Variable | Remove-Variable -ErrorAction SilentlyContinue
+[System.Console]::Clear()
+
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 $VentPoints = [Object[]]::new(1000000)
 
-# [string[]] $VentsInput = Get-Content .\05-1-Demo-Input.txt
-[string[]] $VentsInput = Get-Content .\05-1-Input.txt
+# [string[]] $VentsInput = Get-Content -Path $PSScriptRoot\DataDemo.txt -ErrorAction Stop
+[string[]] $VentsInput = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
 
 foreach ($LineOfVents in $VentsInput) {
     $x1, $y1, $x2, $y2 = [int[]] $LineOfVents.Split(", ->".ToCharArray(), [System.StringSplitOptions]::RemoveEmptyEntries)
@@ -46,4 +49,4 @@ $dangerous
 Write-Host "Time for finding the amount of dangerous VentPoints with for:", $stopwatch.Elapsed.TotalSeconds
 # This is almost as fast as the foreach, but even if you hardcode the $VentPoints.Count to 1000000 it is still slower
 
-# Correct answer = 22088 in 0.09 + 0.05 seconds (foreach) or 0.07 seconds (for) or 1.16 seconds (.Where)
+# Correct answer = 22088 (12 for testdata) in 0.09 + 0.05 seconds (foreach) or 0.07 seconds (for) or 1.16 seconds (.Where)

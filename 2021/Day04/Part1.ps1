@@ -1,10 +1,13 @@
+Get-Variable | Remove-Variable -ErrorAction SilentlyContinue
+[System.Console]::Clear()
+
 [System.Collections.ArrayList] $BingoCards = @()
 [string[]] $BingoOrder = @()
 [int] $BingoSize = 0
 $Bingo = $false
 
-# [string[]] $BingoInput = Get-Content .\04-1-Demo-Input.txt
-[string[]] $BingoInput = Get-Content .\04-1-Input.txt
+# [string[]] $BingoInput = Get-Content -Path $PSScriptRoot\DataDemo.txt -ErrorAction Stop
+[string[]] $BingoInput = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
 
 for ($i = 1 ; $i -lt $BingoInput.Count ; $i++) {
     if ($BingoInput[$i] -eq "") {
@@ -36,7 +39,7 @@ foreach ($BingoCallNumber in $BingoOrder) {
             if ($Bingo) {
                 Write-Host "Bingo on Card $BingoCard after $BingoCallNumber"
                 ($BingoCard.where({$_ -ne -1}) | Measure-Object -Sum).Sum * $BingoCallNumber
-                # Correct answer = 5685
+                # Correct answer = 5685 (4512 for testdata)
                 exit
             }
         }

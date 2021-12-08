@@ -4,16 +4,19 @@ https://adventofcode.com/2021/leaderboard/private/view/676063
 
 Useful for measuring performance:
     $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-    $stopwatch.Elapsed
-Useful for making sure that variables are reset:
+    Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
+Useful for making sure that variables and output are reset:
      Get-Variable | Remove-Variable -ErrorAction SilentlyContinue
+     [System.Console]::Clear()
 
 Most code follows these principle:
     Files:
-        Day-Part[-Demo]-Input.txt
-        Day-Part.ps1
-        Sometimes there is an extra "for fun" file like Day-Part.py or Day-Part.xlsx
+        yyyy\Daydd\Data[Demo].txt
+        yyyy\Daydd\Partn.ps1
+        Sometimes there is an extra "for fun" file like Partn.py or Partn.xlsx
+        Sometimes there is an extra "Alternative/Optimized" file like PartnAlternative.ps1 
     Code:
+        Reset variables and terminal output
         StopWatch
         Variable initialisation
         Input
@@ -21,7 +24,7 @@ Most code follows these principle:
             Real
         Functions and or Loops
         Calculated Answer
-        CorrectAnswer + Speed/Resource-Analysis
+        # Correct answer = xyz (abc for testdata) + Speed/Resource-Analysis
 
         Sometimes there will be stopwatch-output or other "debug-info" written but that will mostly be commented out ones the code is working
         I almost never hardcode values, especially not when they can/should be gathered from the input. Exceptions are for Speed/Resource-Analysis

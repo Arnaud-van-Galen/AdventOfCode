@@ -1,5 +1,8 @@
+Get-Variable | Remove-Variable -ErrorAction SilentlyContinue
+[System.Console]::Clear()
+
 # [string[]] $Report = "00100","11110","10110","10111","10101","01111","00111","11100","10000","11001","00010","01010"
-[string[]] $Report = Get-Content .\03-1-Input.txt
+[string[]] $Report = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
 
 function Find-MostCommonOrMatching { param( [string] $findvalue, [string[]] $report )
     for ($i = 0 ; $i -lt $report[0].Length ; $i++) {
@@ -23,4 +26,4 @@ $OxygenGeneratorRating = Find-MostCommonOrMatching -findvalue "1" -report $Repor
 $CO2ScrubberRating = Find-MostCommonOrMatching -findvalue "0" -report $Report
 
 Write-Host ($OxygenGeneratorRating * $CO2ScrubberRating)
-# Correct answer = 2372923
+# Correct answer = 2372923 (230 for testdata)

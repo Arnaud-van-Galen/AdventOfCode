@@ -1,9 +1,12 @@
+Get-Variable | Remove-Variable -ErrorAction SilentlyContinue
+[System.Console]::Clear()
+
 [int] $Horizontal = 0
 [int] $Vertical = 0
 [int] $Aim = 0
 
 # [string[]] $Course = "forward 5","down 5","forward 8","up 3","down 8","forward 2"
-[string[]] $Course = Get-Content .\02-1-Input.txt
+[string[]] $Course = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
 
 foreach($Movement in $Course) {
     [String] $Direction, [int]$Amount = $Movement.Split(" ")
@@ -21,4 +24,4 @@ foreach($Movement in $Course) {
 }
 
 Write-Host "Total movement after multiplication: $($Horizontal * $Vertical)"
-# Correct answer = 1765720035
+# Correct answer = 1765720035 (900 for testdata)
