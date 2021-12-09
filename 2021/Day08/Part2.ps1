@@ -53,5 +53,6 @@ foreach ($Entry in $DataInput) {
   }
   $DisplayValueSum += [int] $RevertedOutputValue
 }
+
 Write-Host $DisplayValueSum
 # Correct answer = 1011785 (5353 en 61229 for testdata)
