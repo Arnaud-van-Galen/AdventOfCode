@@ -22,7 +22,7 @@ $SevenDigitDisplay.Keys.ForEach( { $SevenDigitDisplayReverted.Add($SevenDigitDis
 
 [int] $DisplayValueSum = 0
 foreach ($Entry in $DataInput) {
-  # In part one we looked at the occurences of numbers and discovered that 1, 4, 7 (and 8) are easily discovered.
+  # In Part 1 we looked at the occurences of numbers and discovered that 1, 4, 7 (and 8) are easily discovered.
   # By looking at the occurences of segments and combining them with the 1, 4, 7 knowledge we can easily built up a WireChanges Dictionary which is basically a decryption key 
   # b occurs 6 times, e 4 times, f 9 times, a_and_c 8 times, d_and_g 7 times (Evidence: $SevenDigitDisplay.Values.ToCharArray() | Group-Object -NoElement | Sort-Object -Property Count)
   # This one observation removes complexity from 7! = 720 to 2! * 2! = 4
