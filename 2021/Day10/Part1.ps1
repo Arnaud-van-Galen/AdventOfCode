@@ -15,13 +15,13 @@ $Lines.ForEach{
     $Reduced = RemoveSimpleChunks -StringToReduce $_
     $WrongClosurePosition = $Reduced.IndexOfAny(")}]>")
     if ($WrongClosurePosition -gt -1) {
-        # Write-Host $_, $Reduced, $Reduced[$WrongClosurePosition]
         switch ($Reduced[$WrongClosurePosition]) {
             ")" { $Points += 3 ; break }
             "]" { $Points += 57 ; break }
             "}" { $Points += 1197 ; break }
             ">" { $Points += 25137 ; break }
         }
+        # Write-Host $_, $Reduced, $Reduced[$WrongClosurePosition]
     }
 }
 
