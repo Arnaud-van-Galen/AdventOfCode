@@ -32,8 +32,8 @@ foreach ($Instruction in $Instructions) {
 $Width = $Dots.ForEach{$_.Split(",")[0]} | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum
 $Height = $Dots.ForEach{$_.Split(",")[1]} | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum
 $Code = ""
-for ($y = 0; $y -lt $Height; $y++) {
-    for ($x = 0; $x -lt $Width; $x++) {
+for ($y = 0; $y -le $Height; $y++) {
+    for ($x = 0; $x -le $Width; $x++) {
         if ($Dots.Contains( (($x, ",", $y) | Join-String))) {
             $Code += "*"
         } else {
@@ -42,5 +42,6 @@ for ($y = 0; $y -lt $Height; $y++) {
     }
     $Code += [System.Environment]::NewLine
 }
+
 $Code
-# Correct answer = AHGCPGAI (17 for testdata)
+# Correct answer = AHGCPGAU
