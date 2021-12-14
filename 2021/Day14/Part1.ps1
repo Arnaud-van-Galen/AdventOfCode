@@ -19,6 +19,7 @@ for ($Step = 1; $Step -le $StepCount; $Step++) {
     for ($i = 0; $i -lt $Template.Length - 1; $i++) {
         $TemplatePair = $Template.Substring($i, 2) # Take 2 characters from Template in this step
         $NewPolymer.Add($TemplatePair[0] + $Rules[$TemplatePair]) | Out-Null # TempArray += Add the first character of that and the looked up InsertionElement
+        # Write-Host $Template, $TemplatePair, $Rules[$TemplatePair], $NewPolymer
     }
     $Template = ($NewPolymer | Join-String) + $Template[-1] # The new Template becomes the TempArray and the last character of the old Template
 }

@@ -25,7 +25,7 @@ for ($i = 0; $i -lt $Template.Length - 1; $i++) {
 for ($Step = 1; $Step -le $StepCount; $Step++) {
     $NewPolymerPairCount = @{}
     foreach ($Pair in $PairCounts.Keys) {
-        #ToDo: I expected Add should be Add if not exist, otherwise += value, but the HashTable is smart enough to add a 0 valued key/value by default
+        # ToDo: I expected Add should be "Add if not exist, otherwise += value", but the HashTable is smart enough to add a 0 valued key/value by default
         $NewPair1 = $Pair[0] + $rules[$Pair] # NN becomes NC...
         $NewPair2 = $rules[$Pair] + $Pair[1] # NN becomes ...and CN
         $NewPolymerPairCount[$NewPair1] += $PairCounts[$Pair]
