@@ -1,5 +1,5 @@
 # ToDo: Try to only calculate the $HasDoubleVisited once during if ($PossibleNextPath -cin $SmallCavesVisited) by passing it as an argument
-Get-Variable | Remove-Variable -ErrorAction SilentlyContinue
+Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [System.Console]::Clear()
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 

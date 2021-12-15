@@ -1,4 +1,4 @@
-Get-Variable | Remove-Variable -ErrorAction SilentlyContinue
+Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [System.Console]::Clear()
 $Score1 = 0
 foreach($Line in Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop) {

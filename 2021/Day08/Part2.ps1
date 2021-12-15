@@ -1,4 +1,4 @@
-Get-Variable | Remove-Variable -ErrorAction SilentlyContinue
+Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [System.Console]::Clear()
 
 [System.Collections.Hashtable] $SevenDigitDisplay = @{

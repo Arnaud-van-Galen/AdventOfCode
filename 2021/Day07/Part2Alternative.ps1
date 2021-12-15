@@ -1,4 +1,4 @@
-Get-Variable | Remove-Variable -ErrorAction SilentlyContinue
+Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [System.Console]::Clear()
 
 [int] $Average = 0

@@ -1,4 +1,4 @@
-Get-Variable | Remove-Variable -ErrorAction SilentlyContinue
+Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [System.Console]::Clear()
 $Lines = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
 $Scores2 = [int64[]]::new($Lines.Count)
