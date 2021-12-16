@@ -8,7 +8,7 @@
 ---
 #### Code tips and tricks
 - Useful for measuring performance:
-    - ` $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()`
+    - `$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()`
     - `Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds`
 - Useful for making sure that variables and output are reset:
      - ~~`Get-Variable | Remove-Variable -ErrorAction SilentlyContinue`~~

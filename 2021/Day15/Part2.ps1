@@ -1,6 +1,7 @@
 Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [System.Console]::Clear()
 
+$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 $Width = 0
 $Height = 0
 $MinValues = @{} # Key = $x,$y Value = Min($ValueOnTop, $ValueOnLeft)
@@ -13,10 +14,15 @@ function Get-RiskValue { param ( [int] $X, [int] $Y )
     $CurrentIterationX = [System.Math]::Floor($X / $Width + 1)
     $CurrentIterationY = [System.Math]::Floor($Y / $Height + 1)
     $RiskIncreases = $CurrentIterationX - 1 + $CurrentIterationY - 1
-    $CurrentRiskLevel = ($OrgRiskLevel + $RiskIncreases) % 9 # 2 in grid 1,1 becomes 5 in grid 3,2 and 2,3. 8 becomes 2 after resetting to 9 once. 8 +13 becomes 3 after resetting twice
-    if ($CurrentRiskLevel -eq 0) { $CurrentRiskLevel = 9 } # Reset to 1 after 9. ToDo: This only works for low cave-iterations that will not reset twice. Should be something like $CurrentRiskLevel % 9  8 + 5 becomes 
-    # $MinValues[-join($OrgX, "," , $OrgY)]
-    return [int] $CurrentRiskLevel
+    $CurrentRiskLevel = ($OrgRiskLevel + $RiskIncreases) % 9 # Reset to 1 after 9. This even works for resetting several times during big iteratations 8 after 13 riskincreases becomes 3.
+    if ($CurrentRiskLevel -eq 0) { $CurrentRiskLevel = 9 } # 9 % 9 becomes 0 but should stay 9
+    return $CurrentRiskLevel
+    # Some examples will clarify what is happening here.
+    # Lets say we want to know the RiskLevel of column 251 (x), row 343 (y) in a 100 (width) by 50 (height) grid (yes, this code also works for non-square grids)
+    # This risk-level will be based on column 51, row 43 in the original input (iteration 1). Let's assume that this value was 7
+    # (Keep in mind that column 0 and row 0 also exist, so the original input would be [0..49][0..99] rows first, then columns)
+    # Column 251 is the 3rd iteration (2 grids to the right) and row 343 is the 7nd iteration (6 grids down) so a total of 8 riskincreases have happened to this grid
+    # All of that means that this will happen to that risklevel of 7: 7 (0), 8 (1), 9 (2), 1 (3), 2 (4), 3 (5), 4 (6), 5 (7), 6 (8). So it will become 6
 }
 function Add-MinValue { param ( [int] $X, [int] $Y, [ValidateSet("Top", "Left", "Normal")] [string] $Kind)
     $ValueSelf = Get-RiskValue -X $X -Y $Y
@@ -31,8 +37,8 @@ function Add-MinValue { param ( [int] $X, [int] $Y, [ValidateSet("Top", "Left", 
 }
 
 # Pay attention when using RiskLevels[a][b]. a = y, b = x!
-# $RiskLevels = Get-Content -Path $PSScriptRoot\DataDemo.txt -ErrorAction Stop
-$RiskLevels = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
+$RiskLevels = Get-Content -Path $PSScriptRoot\DataDemo.txt -ErrorAction Stop
+# $RiskLevels = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
 
 $Width = $RiskLevels[0].Length
 $Height = $RiskLevels.Count
@@ -50,3 +56,4 @@ $MinValues[-join(($Width * $CaveIterations - 1), ",", ($Height * $CaveIterations
 # Correct answer = !2838 (315 for testdata)
 # Get-MyVariables
 # exit
+Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
