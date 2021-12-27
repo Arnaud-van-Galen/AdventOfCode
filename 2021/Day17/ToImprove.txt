@@ -1,0 +1,1 @@
+ToDo: Betere defaults en exit from loop

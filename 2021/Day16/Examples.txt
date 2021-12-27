@@ -1,0 +1,125 @@
+# 1 HEX is 4 bits. Whole thing is a package with ignorable 0's at the end (alligned to the HEX)
+# Package start like [0..2] bits = packet version, [3..5] bits is packet TypeID
+# TypeID 4 (100) indicates a literal value (1 for more, 0 for last)[4Bins] without a header will come
+# TypeID <>4 )<>100 indicates other package(s) with header(s) will come but will first tell you their length or amount
+#     0 next 15 bits are number for length of subpackets
+#     1 next 11 bits are number of subpackets
+From HexString to ByteString: "D2FE28".ToCharArray().ForEach{[convert]::ToString("0x"+$_,2).PadLeft(4, "0")} | Join-String
+From ByteString to Decimal: [Convert]::ToInt32("10000001", 2)
+
+
+D2FE28
+    110 100 1-0111 1-1110 0-0101 000
+    VVV TTT A-AAAA A-AAAA A-AAAA JJJ
+    Version=6, Type=4, Value=1021, bit of Junk/Trash/LeftOver
+
+38006F45291200
+    001 110 0 000000000011011 110 100 0-1010 010 100 1-0001 0-0100 0000000
+    VVV TTT I NNNNNNNNNNNNNNN VVV TTT A-AAAA VVV TTT B-BBBB B-BBBB
+    Version=1, Type=6, Id=0, Length=27
+        Version=6, Type=4, Value=10
+        Version=2, Type=4, Value20
+    , bit of Junk/Trash/LeftOver
+
+EE00D40C823060
+    111 011 1 00000000011 010 100 0-0001 100 100 0-0010 001 100 0-0011 00000
+    VVV TTT I NNNNNNNNNNN VVV TTT A-AAAA VVV TTT B-BBBB VVV TTT C-CCCC
+    Version=7, Type=3, Index=1, Numbers=3
+        Version=2, Type=4, Value=1
+        Version=4, Type=4, Value=2
+        Version=1, Type=4, Value=3
+        V:PacketVersion=7, T:TypeID=3, I=ID=1 (dus N3)
+        V:PacketVersion=2, T:TypeID=4, I=ID=1 (dus N3)    
+    , bit of Junk/Trash/LeftOver
+
+8A004A801A8002F478
+    100 010 1 00000000001
+    VVV TTT I NNNNNNNNNNN
+    4   2   1 1
+        001 010 1 00000000001
+        VVV TTT I NNNNNNNNNNN
+        1   2   1   1
+            101 010 0 000000000001011
+            VVV TTT I LLLLLLLLLLLLLLL
+            5   2   0   11
+                110 100 0-1111
+                VVV TTT A-AAAA
+                6   4   15
+    000
+
+620080001611562C8802118E34
+    011 000 1 00000000010 000 000 0 000000000010110 000 100 0-1010 101 100 0-1011 001000100000000010000100011000111000110100
+    VVV TTT I NNNNNNNNNNN 
+    3   0   1 2           
+        000 000 0 000000000010110
+        VVV TTT I LLLLLLLLLLLLLLL 
+        0   0   0 22              
+            000 100 0-1010
+            VVV TTT A-AAAA 
+            0   4   10     
+            101 100 0-1011
+            VVV TTT B-BBBB
+            5   4   11
+        001 000 1 00000000010 
+        VVV TTT I NNNNNNNNNNN 
+        1   0   1 2           
+            000 100 0-1100 
+            VVV TTT A-AAAA 
+            0   4   12     
+            011 100 0-1101 
+            VVV TTT B-BBBB
+            3   4   13
+    00
+    JJ
+
+C0015000016115A2E0802F182340
+    110 000 0 000000001010100 
+    VVV TTT I LLLLLLLLLLLLLLL
+    6   0   0 84
+        000 000 0 000000000010110
+        VVV TTT I LLLLLLLLLLLLLLL 
+        0   0   0 22              
+            000 100 0-1010
+            VVV TTT A-AAAA
+            0   4   10    
+            110 100 0-1011 
+            VVV TTT B-BBBB
+            6   4   11
+        100 000 1 00000000010
+        VVV TTT I NNNNNNNNNNN
+        4   0   1 2
+            111 100 0-1100
+            VVV TTT A-AAAA
+            7   4   12
+            000 100 0-1101
+            VVV TTT B-BBBB
+            0   4   13
+    000000
+    JJJJJJ
+
+A0016C880162017C3686B18A3D4780
+    101 000 0 000000001011011
+    VVV TTT I LLLLLLLLLLLLLLL
+    5   0   0 91
+        001 000 1 00000000001
+        VVV TTT I NNNNNNNNNNN
+        1   0   1 1
+            011 000 1 00000000101
+            VVV TTT I NNNNNNNNNNN
+            3   0   1 5
+                111 100 0-0110
+                VVV TTT A-AAAA
+                7   4   6
+                110 100 0-0110
+                VVV TTT B-BBBB
+                6   4   6
+                101 100 0-1100
+                VVV TTT C-CCCC
+                5   4   12
+                010 100 0-1111
+                VVV TTT D-DDDD
+                2   4   15
+                010 100 0-1111
+                VVV TTT E-EEEE
+                2   4   15
+    0000000

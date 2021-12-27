@@ -1,7 +1,7 @@
 Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [System.Console]::Clear()
 
-$RiskLevels = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
+$RiskLevels = Get-Content -Path $PSScriptRoot\DebugExample.txt -ErrorAction Stop
 $Width = $RiskLevels[0].Length
 $Height = $RiskLevels.Count
 $CaveIterations = 5
@@ -86,6 +86,6 @@ for ($i = $EndY + $EndX; $i -ge 0; $i--) {
         }
         $RouteMessage = ($RouteMessage,($MinValues[-join($X, "," ,($Y - 1))])) | Out-String
     }
-    $Route.Add($RouteMessage)
+    [void] $Route.Add($RouteMessage)
 }
 $Route | Out-File .\Route.csv
