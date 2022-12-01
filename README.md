@@ -1,10 +1,18 @@
 #### Links
-* [Aankondiging van Delta-N](https://deltanoffice365.sharepoint.com/sites/dev/SitePages/Advent-of-Code-2021.aspx)
-* [Doe mee via](https://adventofcode.com/2021)
-* [Meld je aan voor het private leaderbord](https://adventofcode.com/2021/leaderboard/private/view/676063)
-* [Chat mee](https://teams.microsoft.com/_#/conversations/19:82824b8c67ac4964870839c6f6cb22dc@thread.v2?ctx=chat)
-* [Deel je code](https://github.com/Arnaud-van-Galen/AdventOfCode)
-* [En kijk ook naar die van anderen](https://deltanoffice365-my.sharepoint.com/:x:/g/personal/ferdivt_delta-n_nl/EeWDEAWJeDlBkAlJDFIxghABMyVxxfpAVssXctUe0iYn2g)
+* 2022
+    * [Aankondiging van Delta-N](https://deltanoffice365.sharepoint.com/SitePages/Advent-of-Code-2022.aspx)
+    * [Doe mee via](https://adventofcode.com/2022)
+    * [Meld je aan voor het private leaderbord](https://adventofcode.com/2022/leaderboard/private/view/676063)
+    * [Chat mee](https://teams.microsoft.com/_#/conversations/19:82824b8c67ac4964870839c6f6cb22dc@thread.v2?ctx=chat)
+    * [Deel je code](https://github.com/Arnaud-van-Galen/AdventOfCode/tree/main/2022)
+    * [En kijk ook naar die van anderen](https://deltanoffice365-my.sharepoint.com/personal/giow_delta-n_nl/Documents/Microsoft%20Teams%20Chat%20Files/Repos%20AoC%202022.xlsx)
+* 2021
+    * [Aankondiging van Delta-N](https://deltanoffice365.sharepoint.com/sites/dev/SitePages/Advent-of-Code-2021.aspx)
+    * [Doe mee via](https://adventofcode.com/2021)
+    * [Meld je aan voor het private leaderbord](https://adventofcode.com/2021/leaderboard/private/view/676063)
+    * [Chat mee](https://teams.microsoft.com/_#/conversations/19:82824b8c67ac4964870839c6f6cb22dc@thread.v2?ctx=chat)
+    * [Deel je code](https://github.com/Arnaud-van-Galen/AdventOfCode/tree/main/2021)
+    * [En kijk ook naar die van anderen](https://deltanoffice365-my.sharepoint.com/:x:/g/personal/ferdivt_delta-n_nl/EeWDEAWJeDlBkAlJDFIxghABMyVxxfpAVssXctUe0iYn2g)
 ---
 #### Code tips and tricks
 - Useful for measuring performance:
