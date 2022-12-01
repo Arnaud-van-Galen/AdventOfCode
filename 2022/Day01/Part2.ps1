@@ -1,22 +1,20 @@
 Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [System.Console]::Clear()
 
-[int] $PrevReportValue = $NULL
-[int] $IncreaseCount = 0
-[int] $GroupSize = 3
+[int[]] $MaxCalorieSums = @()
+[int] $CurrentCalorieSum = 0
 
-# $Report = 199,200,208,210,200,207,240,269,260,263
-$Report = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
+# $Data = Get-Content -Path $PSScriptRoot\Data1-Sample.txt -ErrorAction Stop
+$Data = Get-Content -Path $PSScriptRoot\Data1.txt -ErrorAction Stop
+$Data += ""
 
-for ($i = $GroupSize ; $i -lt $Report.Count ; $i++) {
-    if (!$PrevReportValue) { $PrevReportValue = $Report[ ($i-$GroupSize)..($i-1) ] | Measure-Object -Sum | Select-Object -expand Sum }
-    $ReportValue = $Report[ ($i-$GroupSize+1)..($i) ] | Measure-Object -Sum | Select-Object -expand Sum
-    if ($PrevReportValue -lt $ReportValue) {
-        # Write-Host "From $PrevReportValue to $ReportValue is an increase"
-        $IncreaseCount++
+foreach ($CalorieValue in $Data) {
+    $CurrentCalorieSum += $CalorieValue
+    if ($CalorieValue -eq "") {
+        $MaxCalorieSums += $CurrentCalorieSum
+        $CurrentCalorieSum = 0
     }
-    $PrevReportValue = $ReportValue
 }
 
-Write-Host "The number of times a depth measurement increases: $IncreaseCount"
-# Correct answer = 1518 (5 for testdata)
+Write-Host "the 3 Elfs carrying the most Calories in total are carrying $((($MaxCalorieSums | Sort-Object -Descending)[0..2] | Measure-Object -Sum).Sum) Calories"
+# Correct answer = 207576 (45000 for testdata)
