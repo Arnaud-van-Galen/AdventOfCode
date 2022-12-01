@@ -4,8 +4,8 @@ Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [int[]] $MaxCalorieSums = @()
 [int] $CurrentCalorieSum = 0
 
-# $Data = Get-Content -Path $PSScriptRoot\Data1-Sample.txt -ErrorAction Stop
-$Data = Get-Content -Path $PSScriptRoot\Data1.txt -ErrorAction Stop
+# $Data = Get-Content -Path $PSScriptRoot\DataDemo.txt -ErrorAction Stop
+$Data = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
 $Data += ""
 
 foreach ($CalorieValue in $Data) {
