@@ -7,7 +7,7 @@ Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 $Data = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
 
 foreach ($AssignmentPair in $Data) {
-    [int]$min1, [int]$max1, [int]$min2, [int]$max2 = $AssignmentPair.Split("-,".ToCharArray())
+    [int] $min1, [int] $max1, [int] $min2, [int] $max2 = $AssignmentPair.Split("-,".ToCharArray())
     if (!($max1 -lt $min2 -or $max2 -lt $min1)) {
         $OverlappingSum++
     }
