@@ -4,8 +4,8 @@ Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [string] $Path = "/" # Make sure to always end Path with a /
 [hashtable] $Files = @{}
 [hashtable] $Folders = @{}
-[int] $TotalSizeLimit = 100000
-[int] $TotalSize = 0
+[int] $DiskSpaceTotal = 70000000
+[int] $DiskSpaceNeeded = 30000000
 
 # $Data = Get-Content -Path $PSScriptRoot\DataDemo.txt -ErrorAction Stop
 $Data = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
@@ -43,11 +43,12 @@ foreach ($File in $Files.Keys) {
     $FileParts = $File.Split("/")
     for ($i = 0; $i -lt $FileParts.Count - 1; $i++) {
         $currentFolder = ($FileParts[0..$i] -join "/") + "/"
-        $Folders[$currentFolder] += $Files[$File]  }
+        $Folders[$currentFolder] += $Files[$File]
+    }
 }
 
 $UsedSpace = $Folders["/"]
-$UsedSpaceNeeded = $UsedSpace - 30000000
+$UsedSpaceNeeded = $DiskSpaceNeeded - ($DiskSpaceTotal - $UsedSpace)
 foreach ($FolderSize in $Folders.Values | Sort-Object) {
     if ($FolderSize -ge $UsedSpaceNeeded) {
         $FolderSize
@@ -55,4 +56,4 @@ foreach ($FolderSize in $Folders.Values | Sort-Object) {
     }
 }
 
-# Correct answer = 1544 (95437 for testdata)
+# Correct answer = 3579501 (24933642 for testdata)

@@ -43,12 +43,15 @@ foreach ($File in $Files.Keys) {
     $FileParts = $File.Split("/")
     for ($i = 0; $i -lt $FileParts.Count - 1; $i++) {
         $currentFolder = ($FileParts[0..$i] -join "/") + "/"
-        $Folders[$currentFolder] += $Files[$File]  }
+        $Folders[$currentFolder] += $Files[$File]
+    }
 }
 
 foreach ($Folder in $Folders.Values) {
-    if ($Folder -le $TotalSizeLimit) {$TotalSize += $Folder}
+    if ($Folder -le $TotalSizeLimit) {
+        $TotalSize += $Folder
+    }
 }
 
 Write-Host "Total size of at most $TotalSizeLimit is $TotalSize"
-# Correct answer = 1544 (95437 for testdata)
+# Correct answer = 1477771 (95437 for testdata)
