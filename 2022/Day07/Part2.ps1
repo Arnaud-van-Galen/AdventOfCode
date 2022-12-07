@@ -14,20 +14,15 @@ foreach ($TerminalLine in $Data) {
     if ($TerminalLine.StartsWith("$")) {
         if ($TerminalLine.StartsWith("$ cd")) {
             $PathChange = $TerminalLine.Split(" ")[2]
-            switch ($PathChange) {
-                "/" {
-                    $Path = "/"
-                    break
+            if ($PathChange -eq "/") {
+                $Path = "/"
+            } elseif ($PathChange -eq "..") {
+                if ($Path -ne "/") {
+                    $SecondToLastSlash = $Path.Substring(0, $Path.Length - 1).LastIndexOf("/")
+                    $Path = $Path.Substring(0, $SecondToLastSlash) + "/"
                 }
-                ".." {
-                    if ($Path -ne "/") {
-                        $SecondToLastSlash = $Path.Substring(0, $Path.Length - 1).LastIndexOf("/")
-                        $Path = $Path.Substring(0, $SecondToLastSlash) + "/"
-                    }
-                }
-                Default {
-                    $Path += $PathChange + "/"
-                }
+            } else {
+                $Path += $PathChange + "/"
             }
         }
     }
