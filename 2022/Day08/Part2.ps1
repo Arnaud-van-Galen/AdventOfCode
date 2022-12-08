@@ -10,33 +10,36 @@ $RowCount = $Data.Count
 $ColumnCount = $Data[0].Length
 
 for ($x = 0; $x -lt $ColumnCount; $x++) {
-    for ($y = 0; $y -lt $RowCount; $y++) { # EdgeDetection
-        if ($x -ne 0 -and $x -ne $ColumnCount - 1 -and $y -ne 0 -and $y -ne $RowCount - 1) {
+    for ($y = 0; $y -lt $RowCount; $y++) {
+        if ($x -ne 0 -and $x -ne $ColumnCount - 1 -and $y -ne 0 -and $y -ne $RowCount - 1) { # EdgeDetection
             $ScanLeft, $ScanRight, $ScanUp, $ScanDown, $ScenicScore = 0
-            $ContinueScan=$true
-            for ($i = $x - 1; $i -ge 0 -and $ContinueScan; $i--) {
+            
+            $ContinueScan = $true
+            for ($i = $x - 1; $i -ge 0 -and $ContinueScan; $i--) { # ScanLeft
                 $ScanLeft++
-                if ($Data[$y][$x] -le $Data[$y][$i]) { $ContinueScan = $false}
+                if ($Data[$y][$x] -le $Data[$y][$i]) { $ContinueScan = $false }
             }
-            $ContinueScan=$true
-            for ($i = $x + 1; $i -le $ColumnCount - 1 -and $ContinueScan; $i++) {
+            
+            $ContinueScan = $true
+            for ($i = $x + 1; $i -le $ColumnCount - 1 -and $ContinueScan; $i++) { # ScanRight
                 $ScanRight++
-                if ($Data[$y][$x] -le $Data[$y][$i]) { $ContinueScan = $false}
+                if ($Data[$y][$x] -le $Data[$y][$i]) { $ContinueScan = $false }
             }
-            $ContinueScan=$true
-            for ($i = $y - 1; $i -ge 0 -and $ContinueScan; $i--) {
+            
+            $ContinueScan = $true
+            for ($i = $y - 1; $i -ge 0 -and $ContinueScan; $i--) { # ScanUp
                 $ScanUp++
-                if ($Data[$y][$x] -le $Data[$i][$x]) { $ContinueScan = $false}
+                if ($Data[$y][$x] -le $Data[$i][$x]) { $ContinueScan = $false }
             }
-            $ContinueScan=$true
-            for ($i = $y + 1; $i -le $RowCount - 1 -and $ContinueScan; $i++) {
+            
+            $ContinueScan = $true
+            for ($i = $y + 1; $i -le $RowCount - 1 -and $ContinueScan; $i++) { # ScanDown
                 $ScanDown++
-                if ($Data[$y][$x] -le $Data[$i][$x]) { $ContinueScan = $false}
+                if ($Data[$y][$x] -le $Data[$i][$x]) { $ContinueScan = $false }
             }
+
             $ScenicScore = $ScanLeft * $ScanRight * $ScanUp * $ScanDown
-            if ($ScenicScore -gt $ScenicScoreMax) {
-                $ScenicScoreMax = $ScenicScore
-            }
+            if ($ScenicScore -gt $ScenicScoreMax) { $ScenicScoreMax = $ScenicScore }
         }
     }
 }
