@@ -18,3 +18,11 @@ $y[0].MyClassProperty
 $a = "abcde"
 $b = $a.ToCharArray()
 [array]::Reverse($b) # $b is now the reversed characterarray ("e", "d", "c", "b", "a") and can be changed back to "edcba" with -join $b
+
+$strings=@"
+123
+456
+"@.split()
+$intarray = [int32[]]::new($strings.count)
+# Doesn't work yet. Work in Progress / ToDo. Should become (1,2,3),(4,5,6)
+$strings.foreach{$_.ToCharArray().foreach{$intarray[$foreach]=[int]$_.tostring()}}
