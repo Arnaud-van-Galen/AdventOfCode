@@ -19,6 +19,14 @@ $a = "abcde"
 $b = $a.ToCharArray()
 [array]::Reverse($b) # $b is now the reversed characterarray ("e", "d", "c", "b", "a") and can be changed back to "edcba" with -join $b
 
+$array = @(1,2,3)
+$array_ref = $array
+$array_val = $array.ForEach{ $_ } # https://www.powershelladmin.com/wiki/Deep_copying_arrays_and_objects_in_PowerShell.php
+$array[0] = 11
+$array_ref[1] = 12
+$array_val[2] = 13
+Write-Output $array, $array_ref, $array_val -NoEnumerate
+
 $strings=@"
 123
 456
