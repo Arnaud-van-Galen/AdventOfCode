@@ -11,7 +11,7 @@ class Monkey {
     [int] $InSpectionCount = 0
 }
 $Rounds = 10000
-$LeastCommonDenominator = 1 # Going to fake this
+$LeastCommonMultiple = 1 # Going to fake this
 
 # $Data = Get-Content -Path $PSScriptRoot\DataDemo.txt -Raw -ErrorAction Stop
 $Data = Get-Content -Path $PSScriptRoot\Data.txt -Raw -ErrorAction Stop
@@ -31,7 +31,7 @@ foreach ($DataMonkey in $DataMonkeys) {
     $CurrentMonkey.OperationKind, $CurrentMonkey.OperationAmount = $CurrentDataMonkey[2].Split(": ")[1].Split(" ")[-2..-1]
     # ParseAction: Turn '   Test: divisible by 23' into 23
     $CurrentMonkey.TestValue = $CurrentDataMonkey[3].Split(" ")[-1]
-    $LeastCommonDenominator = $LeastCommonDenominator * $CurrentMonkey.TestValue
+    $LeastCommonMultiple = $LeastCommonMultiple * $CurrentMonkey.TestValue
     # ParseAction: Turn '     If true: throw to monkey 2' into 2
     $CurrentMonkey.TestPassMonkeyID = $CurrentDataMonkey[4].Split(" ")[-1]
     # ParseAction: Turn '     If false: throw to monkey 3' into 3
@@ -50,7 +50,7 @@ for ($Round = 0; $Round -lt $Rounds; $Round++) {
             } else {
                 $CurrentWorryLevel = $CurrentWorryLevel + $WorryLevelChange
             }
-            $CurrentWorryLevel = $CurrentWorryLevel % $LeastCommonDenominator
+            $CurrentWorryLevel = $CurrentWorryLevel % $LeastCommonMultiple
             if ($CurrentWorryLevel % $CurrentMonkey.TestValue -eq 0) {
                 $Monkeys[$CurrentMonkey.TestPassMonkeyID].WorryLevels += $CurrentWorryLevel
             } else {
