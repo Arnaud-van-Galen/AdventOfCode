@@ -6,7 +6,7 @@ class Location {
     [int] $Row = 0 # Only used for debugging purposes
     [int] $Column = 0 # Only used for debugging purposes
     [int] $Value = 0 # S = 83, E = 69, a-z = 97-122
-    [int] $LocationIndex = 0 # Used to identify this Location and connect it to Adjacent Locations and BasinIndex
+    [int] $LocationIndex = 0 # Used to identify this Location and connect it to Adjacent Locations
     [int[]] $Adjacents = @()
     [int] $ReachableIn = [int]::MaxValue
     [bool] $HasBeenTried = $false
@@ -80,7 +80,13 @@ foreach ($PossibleStartLocationIndex in $PossibleStartLocationIndexes) {
         Write-Host "$RoutesCounter of $($PossibleStartLocationIndexes.Count). From $StartLocationIndex you can reach the end in $MostScenicRouteLengthMin"
     }
 }
+
 $MostScenicRouteLengthMin
 # Correct answer = 439 (29 for testdata)
+# Naam: Part1, Part2
+# Arnaud: 440, 439
+# Aki: 504, 500
+# Mike: 447, 446
+# Niels: 484, 478
 
 Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds

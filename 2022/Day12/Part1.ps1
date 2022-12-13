@@ -6,7 +6,7 @@ class Location {
     [int] $Row = 0 # Only used for debugging purposes
     [int] $Column = 0 # Only used for debugging purposes
     [int] $Value = 0 # S = 83, E = 69, a-z = 97-122
-    [int] $LocationIndex = 0 # Used to identify this Location and connect it to Adjacent Locations and BasinIndex
+    [int] $LocationIndex = 0 # Used to identify this Location and connect it to Adjacent Locations
     [int[]] $Adjacents = @()
     [int] $ReachableIn = [int]::MaxValue
 }
@@ -38,7 +38,6 @@ for ($i = 0; $i -lt $HeightMapValues.Count; $i++) {
 }
 
 $Locations[$StartLocationIndex].ReachableIn = 0
-$LoopCounter = 0
 $RouteHasChanged = $true
 while ($RouteHasChanged) {
     $RouteHasChanged = $false
@@ -52,9 +51,6 @@ while ($RouteHasChanged) {
             }
         }
     }
-    $LoopCounter++
-    # Write-Host "After $LoopCounter RouteChanges the end is reachable in $($Locations[$EndLocationIndex].ReachableIn)"
-    if ($LoopCounter -ge $Locations[$EndLocationIndex].ReachableIn) { $RouteHasChanged = $false } # Already optimal
 }
 
 $Locations[$EndLocationIndex].ReachableIn

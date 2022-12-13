@@ -6,7 +6,7 @@ class Location {
     [int] $Row = 0 # Only used for debugging purposes
     [int] $Column = 0 # Only used for debugging purposes
     [int] $Value = 0 # S = 83, E = 69, a-z = 97-122
-    [int] $LocationIndex = 0 # Used to identify this Location and connect it to Adjacent Locations and BasinIndex
+    [int] $LocationIndex = 0 # Used to identify this Location and connect it to Adjacent Locations
     [int[]] $Adjacents = @()
     [int] $ReachableIn = [int]::MaxValue
 }
@@ -45,7 +45,6 @@ foreach ($PossibleStartLocationIndex in $PossibleStartLocationIndexes) {
     $Locations.ForEach{ $_.ReachableIn=[int]::MaxValue }
     $StartLocationIndex = $PossibleStartLocationIndex
     $Locations[$StartLocationIndex].ReachableIn = 0
-    $RouteCounter = 0 ; $Aborted = $false
     $RouteHasChanged = $true
     while ($RouteHasChanged) {
         $RouteHasChanged = $false
@@ -59,19 +58,19 @@ foreach ($PossibleStartLocationIndex in $PossibleStartLocationIndexes) {
                 }
             }
         }
-        $RouteCounter++
-        # Write-Host "After $RouteCounter RouteChanges the end is reachable in $($Locations[$EndLocationIndex].ReachableIn)"
-        if ($RouteCounter -ge $Locations[$EndLocationIndex].ReachableIn) { $RouteHasChanged = $false } # Already optimal
-        if ($RouteCounter -ge $MostScenicRouteLengthMin) { $RouteHasChanged = $false ; $Aborted = $true } # Will not become shorter than a previous route
     }
     $RoutesCounter++
-    if ($Aborted -or $Locations[$EndLocationIndex].ReachableIn -eq [int]::MaxValue) {
-        Write-Host "$RoutesCounter of $($PossibleStartLocationIndexes.Count). Aborted or End not reached"
+    $RouteLength = $Locations[$EndLocationIndex].ReachableIn
+    if ($RouteLength -eq [int]::MaxValue) {
+        Write-Host "$RoutesCounter of $($PossibleStartLocationIndexes.Count). End not reached from $StartLocationIndex. Current best is still $MostScenicRouteLengthMin"
+    } elseif ( $MostScenicRouteLengthMin -le $RouteLength ) {
+        Write-Host "$RoutesCounter of $($PossibleStartLocationIndexes.Count). End reached from $StartLocationIndex in $RouteLength. Current best is still $MostScenicRouteLengthMin"
     } else {
-        $MostScenicRouteLengthMin = $Locations[$EndLocationIndex].ReachableIn
+        $MostScenicRouteLengthMin = $RouteLength
         Write-Host "$RoutesCounter of $($PossibleStartLocationIndexes.Count). From $StartLocationIndex you can reach the end in $MostScenicRouteLengthMin"
     }
 }
+
 $MostScenicRouteLengthMin
 # Correct answer = 439 (29 for testdata)
 
