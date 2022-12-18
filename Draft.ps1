@@ -34,3 +34,8 @@ $strings=@"
 $intarray = [int32[]]::new($strings.count)
 # Doesn't work yet. Work in Progress / ToDo. Should become (1,2,3),(4,5,6)
 $strings.foreach{$_.ToCharArray().foreach{$intarray[$foreach]=[int]$_.tostring()}}
+
+$data = "[1,[2,[3,[4,[5,6,7]]]],8,9]"
+$datePattern = [Regex]::new("\[*\]")
+$matches = $datePattern.Matches($data)
+$matches.Value
