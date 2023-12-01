@@ -7,7 +7,7 @@ Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 $Data = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
 $ExtraMatches = @{'one'=1;'two'=2;'three'=3;'four'=4;'five'=5;'six'=6;'seven'=7;'eight'=8;'nine'=9}
 foreach ($DataLine in $Data) {
-  $FirstAndLastIndex = ([Regex]::new('(?=\d|'+ ($ExtraMatches.Keys -join '|') +')').Matches($DataLine)*2)[0..-1].Index
+  $FirstAndLastIndex = [Regex]::Matches($DataLine, '(?=\d|'+ ($ExtraMatches.Keys -join '|') +')')[0..-1].Index
   $Result += ($FirstAndLastIndex.ForEach{
     if ([char]::IsNumber($DataLine[$_])) {$DataLine[$_]} else {
       $Index=$_
