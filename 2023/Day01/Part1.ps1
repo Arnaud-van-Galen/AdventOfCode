@@ -10,4 +10,4 @@ foreach ($DataLine in $Data) {
 }
 
 Write-Host $Result
-# Correct answer = 69883 (24000 for testdata)
+# Correct answer = 54159 (142 for testdata)
