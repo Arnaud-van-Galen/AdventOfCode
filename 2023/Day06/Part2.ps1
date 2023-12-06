@@ -3,8 +3,8 @@ Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 
 [Int64] $Result = 1
 
-$Data = Get-Content -Path $PSScriptRoot\DataDemo.txt -ErrorAction Stop
-# $Data = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
+# $Data = Get-Content -Path $PSScriptRoot\DataDemo.txt -ErrorAction Stop
+$Data = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
 [Int64]$Time = $Data[0].split(':')[1].Replace(' ','')
 [Int64]$Distance = $Data[1].split(':')[1].Replace(' ','')
 # t*(71530-t) > 940200
