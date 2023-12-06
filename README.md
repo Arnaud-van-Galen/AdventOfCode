@@ -24,7 +24,7 @@
     - And [more useful tips-and-tricks on how to see/reset your own variables only by using some profile code](https://4sysops.com/archives/display-and-search-all-variables-of-a-powershell-script-with-get-variable/)
         - Summary: Add the below function to the below files and call it by running Get-MyVariables
         `$PSBuiltInVariables = Get-Variable`
-        `function Get-MyVariables { Compare-Object (Get-Variable) $PSBuiltInVariables -Property Name -PassThru | Where-Object -Property Name -ne "PSBuiltInVariables" }`
+        `function Get-MyVariables { Compare-Object (Get-Variable) $PSBuiltInVariables -Property Name -PassThru | Where-Object {$_.Name -ne "PSBuiltInVariables" -and !$_.Name.StartsWith("__") } }`
             - "C:\Users\Arnaud\OneDrive\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
             - "C:\Users\Arnaud\OneDrive\Documents\PowerShell\Microsoft.VSCode_profile.ps1"
         
