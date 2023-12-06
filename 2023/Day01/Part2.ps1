@@ -1,5 +1,6 @@
 Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [System.Console]::Clear()
+$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 [int] $Result = 0
 
@@ -16,5 +17,6 @@ foreach ($DataLine in $Data) {
   } -join '')
 }
 
+Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
 Write-Host $Result
 # Correct answer = 53866 (281 for testdata)

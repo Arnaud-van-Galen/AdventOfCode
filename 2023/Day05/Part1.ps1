@@ -1,5 +1,6 @@
 Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [System.Console]::Clear()
+$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 [Int64] $Result = 0
 
@@ -22,5 +23,6 @@ for ($i = 0; $i -lt $Data.Count; $i++) {
 }
 $Result = ($seeds | Measure-Object -Minimum).Minimum
 
+Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
 Write-Host $Result
 # Correct answer = 289863851 (35 for testdata)

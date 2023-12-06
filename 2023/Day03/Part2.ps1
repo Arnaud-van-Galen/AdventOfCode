@@ -1,5 +1,6 @@
 Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [System.Console]::Clear()
+$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 [int] $Result = 0
 $AdjacentGears = @()
@@ -25,5 +26,6 @@ for ($i = 0; $i -lt $Data.Count; $i++) {
 $RelevantGears = $AdjacentGears | Group-Object y,x | Where-Object {$_.Count -eq 2}
 $RelevantGears.ForEach{$Result += [int]$_.Group.value[0] * [int]$_.Group.value[1]}
 
+Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
 Write-Host $Result
 # Correct answer = 78915902 (467835 for testdata)

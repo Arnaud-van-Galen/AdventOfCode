@@ -1,5 +1,6 @@
 Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [System.Console]::Clear()
+$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 [Int64] $Result = 0
 $SeedRanges = @()
@@ -55,5 +56,6 @@ $SeedRanges = $SeedRanges.Where{$MapCounter -eq $_.NextMapToProcess}
 $SeedRanges += $SeedRangesNext
 $Result = ($SeedRanges.Min | Measure-Object -Minimum).Minimum
 
+Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
 Write-Host $Result
 # Correct answer = 60568880 (46 for testdata)

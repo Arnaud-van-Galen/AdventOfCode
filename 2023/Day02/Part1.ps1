@@ -1,5 +1,6 @@
 Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [System.Console]::Clear()
+$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 [int] $Result = 0
 $BallLimits = @{'red'=12; 'green'=13; 'blue'=14}
@@ -17,5 +18,6 @@ foreach ($DataLine in $Data) {
   if ($GameValid) {$Result += $Game.Split(' ')[1]}
 }
 
+Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
 Write-Host $Result
 # Correct answer = 2204 (8 for testdata)

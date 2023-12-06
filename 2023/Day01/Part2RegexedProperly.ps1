@@ -1,5 +1,6 @@
 Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [System.Console]::Clear()
+$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 [int] $Result = 0
 
@@ -11,5 +12,6 @@ foreach ($DataLine in $Data) {
   $Result += ($FirstAndLast.ForEach{$ExtraMatches[$_.Groups[1].Value] ?? $_.Groups[1].Value} -join '')
 }
 
+Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
 Write-Host $Result
 # Correct answer = 53866 (281 for testdata)

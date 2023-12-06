@@ -1,5 +1,6 @@
 Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [System.Console]::Clear()
+$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 [int] $Result = 0
 
@@ -13,5 +14,6 @@ for ($i = 0; $i -lt $Data.Count; $i++) {
   $Result += [Math]::Floor([Math]::Pow(2, $WinCount-1))
 }
 
+Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
 Write-Host $Result
 # Correct answer = 25651 (13 for testdata)
