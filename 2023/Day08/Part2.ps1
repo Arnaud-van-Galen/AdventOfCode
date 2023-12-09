@@ -2,15 +2,6 @@ Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [System.Console]::Clear()
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
-function GrootsteGemeneDeler {param($a, $b)
-  while ($a -ne 0) {
-    $a_ = $a
-    $a = $b % $a
-    $b = $a_
-  }
-  return $b
-}
-
 [Int64] $Result = 0
 $Mappings = @{}
 
