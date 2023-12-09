@@ -30,7 +30,7 @@ while ($Positions.Where{$_.endswith('Z')}.Count -ne $Positions.Count) {
   $ZCount = $Positions.Where{$_.endswith('Z')}.Count
   if ($MaxZCount -lt $ZCount) {
     $MaxZCount = $ZCount
-    Write-Host $Step, $MaxZCount, $Positions
+    Write-Host (Get-Date), $Step, $MaxZCount, $Positions
   }
   $Step++
 }
