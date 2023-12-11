@@ -93,10 +93,10 @@ for ($y = $LoopBoundaries.MinY+1; $y -le $LoopBoundaries.MaxY-1; $y++) {
       $CheckRight = $Path[$y][($x+1)..$LoopBoundaries.MaxX] -join '' -replace '-+', '-'
       $CheckUp = $Path[($y-1)..$LoopBoundaries.MinY].ForEach{$_[$x]} -join '' -replace '\|+', '|'
       $CheckDown = $Path[($y+1)..$LoopBoundaries.MaxY].ForEach{$_[$x]} -join '' -replace '\|+', '|'
-      $CheckLeftResult = [Regex]::Matches($CheckLeft,'J\-+L|7\-+F|[|\-LJ7F]')
-      $CheckRightResult = [Regex]::Matches($CheckRight,'L\-+J|F\-+7|[|\-LJ7F]')
-      $CheckUpResult = [Regex]::Matches($CheckUp,'L\|+F|J\|+7|[|\-LJ7F]')
-      $CheckDownResult = [Regex]::Matches($CheckDown,'F\|+L|7\|+J|[|\-LJ7F]')
+      $CheckLeftResult = [Regex]::Matches($CheckLeft,'J\-L|7\-F|[|\-LJ7F]')
+      $CheckRightResult = [Regex]::Matches($CheckRight,'L\-J|F\-7|[|\-LJ7F]')
+      $CheckUpResult = [Regex]::Matches($CheckUp,'L\|F|J\|7|[|\-LJ7F]')
+      $CheckDownResult = [Regex]::Matches($CheckDown,'F\|L|7\|J|[|\-LJ7F]')
       $AllChecksResult = @($CheckLeftResult,$CheckRightResult,$CheckUpResult,$CheckDownResult)
       $AllChecksResult = $AllChecksResult.ForEach{$_.Count + $_.Where{$_.Length -gt 1}.Count}
       # $AllChecks = @($CheckLeft, $CheckRight, $CheckUp, $CheckDown)
@@ -143,8 +143,14 @@ while ($MoreChangesToProcess) {
     }
   }
 }
-
 $Result = ($path | select-String 'I' -AllMatches).Matches.count
+$path -replace '\|', '┃'
+$path -replace '-','━'
+$path -replace 'L','┗'
+$path -replace 'J','┛'
+$path -replace '7','┓'
+$path -replace 'F','┏'
+# $path -replace '','━┃┏┓┗┛'
 $path.ForEach{$_+'OOOOOOOOOOI' | Select-String 'I'-AllMatches}
 
 Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
