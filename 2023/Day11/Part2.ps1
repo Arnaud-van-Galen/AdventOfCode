@@ -35,4 +35,4 @@ $Result = $Total
 
 Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
 Write-Host $Result
-# Correct answer = 9608724 (374, 1030 for testdata)
+# Correct answer = 904633799472 (374, 1030, 8410 for testdata)
