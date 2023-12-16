@@ -105,8 +105,10 @@ for ($y = $LoopBoundaries.MinY+1; $y -le $LoopBoundaries.MaxY-1; $y++) {
         # Write-Host $y, $x, ($AllChecksResult -join '-')
         if ($AllChecksResult.ForEach{$_ % 2 -eq 1}.Where{$_}.Count -gt 0 -and $Path[$y][$x-1] -ne 'O' -and $Path[$y][$x+1] -ne 'O' -and $Path[$y-1][$x] -ne 'O' -and $Path[$y+1][$x] -ne 'O') {
           $Path[$y] = $Path[$y].Remove($x,1).Insert($x,'I')
+          [System.Console]::Clear();$path.ForEach{$_+'OOOOOOOOOOI' | Select-String 'I'-AllMatches}
         } else {
           $Path[$y] = $Path[$y].Remove($x,1).Insert($x,'O')
+          [System.Console]::Clear();$path.ForEach{$_+'OOOOOOOOOOI' | Select-String 'I'-AllMatches}
         }
       }
     }
@@ -124,8 +126,10 @@ while ($MoreChangesToProcess) {
       $x = $_.Index
       if ($Path[$y][$x-1] -ne 'O' -and $Path[$y][$x+1] -ne 'O' -and $Path[$y-1][$x] -ne 'O' -and $Path[$y+1][$x] -ne 'O') {
         $Path[$y] = $Path[$y].Remove($x,1).Insert($x,'I')
+        [System.Console]::Clear();$path.ForEach{$_+'OOOOOOOOOOI' | Select-String 'I'-AllMatches}
       } else {
         $Path[$y] = $Path[$y].Remove($x,1).Insert($x,'O')
+        [System.Console]::Clear();$path.ForEach{$_+'OOOOOOOOOOI' | Select-String 'I'-AllMatches}
       }
       $MoreChangesToProcess = $true
     }
@@ -138,20 +142,21 @@ while ($MoreChangesToProcess) {
       $x = $_.Index
       if ($Path[$y][$x-1] -eq 'O' -or $Path[$y][$x+1] -eq 'O' -or $Path[$y-1][$x] -eq 'O' -or $Path[$y+1][$x] -eq 'O') {
         $Path[$y] = $Path[$y].Remove($x,1).Insert($x,'O')
+        [System.Console]::Clear();$path.ForEach{$_+'OOOOOOOOOOI' | Select-String 'I'-AllMatches}
         $MoreChangesToProcess = $true
       }
     }
   }
 }
 $Result = ($path | select-String 'I' -AllMatches).Matches.count
-$path -replace '\|', '┃'
-$path -replace '-','━'
-$path -replace 'L','┗'
-$path -replace 'J','┛'
-$path -replace '7','┓'
-$path -replace 'F','┏'
+# $path -replace '\|', '┃'
+# $path -replace '-','━'
+# $path -replace 'L','┗'
+# $path -replace 'J','┛'
+# $path -replace '7','┓'
+# $path -replace 'F','┏'
 # $path -replace '','━┃┏┓┗┛'
-$path.ForEach{$_+'OOOOOOOOOOI' | Select-String 'I'-AllMatches}
+# $path.ForEach{$_+'OOOOOOOOOOI' | Select-String 'I'-AllMatches}
 
 Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
 Write-Host $Result

@@ -19,6 +19,16 @@ $a = "abcde"
 $b = $a.ToCharArray()
 [array]::Reverse($b) # $b is now the reversed characterarray ("e", "d", "c", "b", "a") and can be changed back to "edcba" with -join $b
 
+function Rotate-StringArray { param ($array)
+  $array = $array.Clone()
+  [Array]::Reverse($array)
+  $array = 
+    for ($i = 0; $i -lt $array[0].Length; $i++) {
+      -join $array.ForEach{$_[$i]}
+    }
+  return $array
+}
+
 $array = @(1,2,3)
 $array_ref = $array
 $array_val = $array.ForEach{ $_ } # https://www.powershelladmin.com/wiki/Deep_copying_arrays_and_objects_in_PowerShell.php
