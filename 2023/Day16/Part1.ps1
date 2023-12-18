@@ -2,8 +2,6 @@ Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [System.Console]::Clear()
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
-$sha256 = [System.Security.Cryptography.SHA256]::Create()
-
 [int] $Result = 0
 $Moves = @{
   'U' = @(0,-1)
@@ -31,15 +29,13 @@ $stack.Push(@(0,0,'R'))
 
 while ($stack.Count -gt 0) {
   $X, $Y, $Move = $stack.Pop()
-  $Energized[-join $sha256.ComputeHash((''+$X+','+$Y+','+$Move).ToCharArray())] = ''+$X+','+$Y
+  $Energized["$X,$Y,$Move"] = "$X,$Y"
   $TileMoves = $Tiles[$Data[$Y][$X].ToString()][$Move]
   $TileMoves.ForEach{
     $NewX = $X + $Moves[$_][0]
     $NewY = $Y + $Moves[$_][1]
-    if ($NewX -ge 0 -and $NewX -lt $GridWidth -and $NewY -ge 0 -and $NewY -lt $GridHeight) {
-      if (!$Energized[-join $sha256.ComputeHash((''+$NewX+','+$NewY+','+$_).ToCharArray())]) {
-        $stack.Push(@($NewX,$NewY,$_))
-      }
+    if ($NewX -ge 0 -and $NewX -lt $GridWidth -and $NewY -ge 0 -and $NewY -lt $GridHeight -and !$Energized["$NewX,$NewY,$_"]) {
+      $stack.Push(@($NewX,$NewY,$_))
     }
   }
 }

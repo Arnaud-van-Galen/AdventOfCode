@@ -20,6 +20,10 @@ $Tiles = @{
   '.' = @{} # ground; there is no pipe in this tile.
   'S' = @{} # the starting position of the animal; there is a pipe on this tile, but your sketch doesn't show what shape the pipe has. 
 }
+$Fillings = @{
+  0 = @{'O'='O';'I'='I'}
+  1 = @{'O'='I';'I'='O'}
+}
 
 # [string[]] $Data = Get-Content -Path $PSScriptRoot\DataDemo3.txt -ErrorAction Stop
 # [string[]] $Data = Get-Content -Path $PSScriptRoot\DataDemo4.txt -ErrorAction Stop
@@ -44,23 +48,17 @@ $Move = $AllowedMovesFromStart[0]
 $StartTile = $Tiles.Keys.Where{(Compare-Object $Tiles[$_].Values.ForEach{$_} $AllowedMovesFromStart).Count -eq 0}[0]
 
 $PathArray = (' '*$GridHeight*$GridWidth).ToCharArray()
-$LoopBoundaries = [PSCustomObject]@{MinX = $StartPosition.X; MaxX = $StartPosition.X; MinY = $StartPosition.Y; MaxY = $StartPosition.Y}
 $NewPosition.X, $NewPosition.Y = $StartPosition.X, $StartPosition.Y 
 $MoveCount = 0
 do {
-  # $PathArray[$NewPosition.Y*$GridWidth+$NewPosition.X]=$Move
   $PathArray[$NewPosition.Y*$GridWidth+$NewPosition.X]=[string]$Data[$NewPosition.Y][$NewPosition.X]
   $NewPosition.X, $NewPosition.Y = ($NewPosition.X + $Moves[$Move][0]), ($NewPosition.Y + $Moves[$Move][1])
-  if ($NewPosition.X -lt $LoopBoundaries.MinX) {$LoopBoundaries.MinX = $NewPosition.X}
-  if ($NewPosition.X -gt $LoopBoundaries.MaxX) {$LoopBoundaries.MaxX = $NewPosition.X}
-  if ($NewPosition.Y -lt $LoopBoundaries.MinY) {$LoopBoundaries.MinY = $NewPosition.Y}
-  if ($NewPosition.Y -gt $LoopBoundaries.MaxY) {$LoopBoundaries.MaxY = $NewPosition.Y}
   $NewPositionTile = [string]$Data[$NewPosition.Y][$NewPosition.X]
   $Move = $Tiles[$NewPositionTile][$Move]
   $MoveCount++
 } until ($NewPosition.X -eq $StartPosition.X -and $NewPosition.Y -eq $StartPosition.Y)
-
 $PathArray[$StartPosition.Y*$GridWidth+$StartPosition.X] = $StartTile
+
 $ZeroFillLoops = [int][Math]::Ceiling(([Math]::Min($GridWidth, $GridHeight)/2))
 for ($z = 0; $z -lt $ZeroFillLoops; $z++) {
   for ($i = $z*$GridWidth+$z; $i -lt $PathArray.Count-$z-$z*$GridWidth; $i++) {
@@ -85,78 +83,64 @@ $Path = for ($i = 0; $i -lt $GridHeight; $i++) {
   $PathArray[($i * $GridWidth)..($i * $GridWidth + $GridWidth-1)] -join ''
 }
 
-for ($y = $LoopBoundaries.MinY+1; $y -le $LoopBoundaries.MaxY-1; $y++) {
-  for ($x = $LoopBoundaries.MinX+1; $x -le $LoopBoundaries.MaxX-1; $x++) {
-    # if ($Path[$y][$x] -notin $Moves.Keys) {
-    if ($Path[$y][$x] -notin $Tiles.Keys -and $Path[$y][$x] -ne 'O') {
-      $CheckLeft = $Path[$y][($x-1)..$LoopBoundaries.MinX] -join '' -replace '-+', '-'
-      $CheckRight = $Path[$y][($x+1)..$LoopBoundaries.MaxX] -join '' -replace '-+', '-'
-      $CheckUp = $Path[($y-1)..$LoopBoundaries.MinY].ForEach{$_[$x]} -join '' -replace '\|+', '|'
-      $CheckDown = $Path[($y+1)..$LoopBoundaries.MaxY].ForEach{$_[$x]} -join '' -replace '\|+', '|'
-      $CheckLeftResult = [Regex]::Matches($CheckLeft,'J\-L|7\-F|[|\-LJ7F]')
-      $CheckRightResult = [Regex]::Matches($CheckRight,'L\-J|F\-7|[|\-LJ7F]')
-      $CheckUpResult = [Regex]::Matches($CheckUp,'L\|F|J\|7|[|\-LJ7F]')
-      $CheckDownResult = [Regex]::Matches($CheckDown,'F\|L|7\|J|[|\-LJ7F]')
-      $AllChecksResult = @($CheckLeftResult,$CheckRightResult,$CheckUpResult,$CheckDownResult)
-      $AllChecksResult = $AllChecksResult.ForEach{$_.Count + $_.Where{$_.Length -gt 1}.Count}
-      # $AllChecks = @($CheckLeft, $CheckRight, $CheckUp, $CheckDown)
-      # $AllChecksResult = $AllChecks.ForEach{[regex]::Matches($_, '([UDLR])\1*').Count}
-      if ($AllChecksResult.Where{$_ -eq 0}.Count -eq 0) {
-        # Write-Host $y, $x, ($AllChecksResult -join '-')
-        if ($AllChecksResult.ForEach{$_ % 2 -eq 1}.Where{$_}.Count -gt 0 -and $Path[$y][$x-1] -ne 'O' -and $Path[$y][$x+1] -ne 'O' -and $Path[$y-1][$x] -ne 'O' -and $Path[$y+1][$x] -ne 'O') {
-          $Path[$y] = $Path[$y].Remove($x,1).Insert($x,'I')
-          [System.Console]::Clear();$path.ForEach{$_+'OOOOOOOOOOI' | Select-String 'I'-AllMatches}
-        } else {
-          $Path[$y] = $Path[$y].Remove($x,1).Insert($x,'O')
-          [System.Console]::Clear();$path.ForEach{$_+'OOOOOOOOOOI' | Select-String 'I'-AllMatches}
+while ($Spaces = $path | select-String ' ' -AllMatches) {
+  $spaces.LineNumber.ForEach{
+    $y = $_-1
+    $LineSpaces = $Path[$y] | Select-String ' ' -AllMatches
+    $LineSpaces.Matches.ForEach{
+      $x = $_.Index
+      if ($Path[$y][$x-1] -eq 'O' -or $Path[$y][$x+1] -eq 'O' -or $Path[$y-1][$x] -eq 'O' -or $Path[$y+1][$x] -eq 'O') {
+        $Path[$y] = $Path[$y].Remove($x,1).Insert($x,'O')
+      } elseif ($Path[$y][$x-1] -eq 'I' -or $Path[$y][$x+1] -eq 'I' -or $Path[$y-1][$x] -eq 'I' -or $Path[$y+1][$x] -eq 'I') {
+        $Path[$y] = $Path[$y].Remove($x,1).Insert($x,'I')
+      } else {
+        $CurrentMatches = $null
+        $HasBeenAssigned = $false
+        if (!$HasBeenAssigned) {
+          $CheckLeft = $Path[$y][($x-1)..0] + 'O' -join '' -replace '-+', ''
+          $CheckLeftNextNonPath = [regex]::Matches($CheckLeft,'[|\-LJ7F]+(?:O|I| )')[0].Value
+          if (!$CheckLeftNextNonPath.EndsWith(' ')) {$CurrentMatches = @([Regex]::Matches($CheckLeftNextNonPath,'7L|JF|[|LJ7F]'))}
+          if ($CurrentMatches) {
+            $Path[$y] = $Path[$y].Remove($x,1).Insert($x,$Fillings[$CurrentMatches.Count % 2][$CheckLeftNextNonPath[-1].ToString()])
+            $HasBeenAssigned = $true
+          }
+        }
+        
+        if (!$HasBeenAssigned) {
+          $CheckRight = $Path[$y][($x+1)..($GridWidth-1)] + 'O' -join '' -replace '-+', ''
+          $CheckRightNextNonPath = [regex]::Matches($CheckRight,'[|\-LJ7F]+(?:O|I| )')[0].Value
+          if (!$CheckRightNextNonPath.EndsWith(' ')) { $CurrentMatches = @([Regex]::Matches($CheckRightNextNonPath,'L7|FJ|[|LJ7F]')) }
+          if ($CurrentMatches) {
+            $Path[$y] = $Path[$y].Remove($x,1).Insert($x,$Fillings[$CurrentMatches.Count % 2][$CheckRightNextNonPath[-1].ToString()])
+            $HasBeenAssigned = $true
+          }
+        }
+
+        if (!$HasBeenAssigned) {
+          $CheckUp = $Path[($y-1)..0].ForEach{$_[$x]} + 'O' -join '' -replace '\|+', ''
+          $CheckUpNextNonPath = [regex]::Matches($CheckUp,'[|\-LJ7F]+(?:O|I| )')[0].Value
+          if (!$CheckUpNextNonPath.EndsWith(' ')) { $CurrentMatches = @([Regex]::Matches($CheckUpNextNonPath,'7L|FJ|[\-LJ7F]')) }
+          if ($CurrentMatches) {
+            $Path[$y] = $Path[$y].Remove($x,1).Insert($x,$Fillings[$CurrentMatches.Count % 2][$CheckUpNextNonPath[-1].ToString()])
+            $HasBeenAssigned = $true
+          }
+        }
+        
+        if (!$HasBeenAssigned) {
+          $CheckDown = $Path[($y+1)..($GridHeight-1)].ForEach{$_[$x]} + 'O' -join '' -replace '\|+', ''
+          $CheckDownNextNonPath = [regex]::Matches($CheckDown,'[|\-LJ7F]+(?:O|I| )')[0].Value
+          if (!$CheckDownNextNonPath.EndsWith(' ')) { $CurrentMatches = @([Regex]::Matches($CheckDownNextNonPath,'L7|JF|[\-LJ7F]')) }
+          if ($CurrentMatches) {
+            $Path[$y] = $Path[$y].Remove($x,1).Insert($x,$Fillings[$CurrentMatches.Count % 2][$CheckDownNextNonPath[-1].ToString()])
+            $HasBeenAssigned = $true
+          }
         }
       }
     }
   }
 }
 
-$MoreChangesToProcess=$true
-while ($MoreChangesToProcess) {
-  $MoreChangesToProcess = $false
-  $Spaces = $path | select-String ' ' -AllMatches
-  $spaces.LineNumber.ForEach{
-    $y = $_-1
-    $LineSpaces = $Path[$y] | Select-String ' ' -AllMatches
-    $LineSpaces.Matches.ForEach{
-      $x = $_.Index
-      if ($Path[$y][$x-1] -ne 'O' -and $Path[$y][$x+1] -ne 'O' -and $Path[$y-1][$x] -ne 'O' -and $Path[$y+1][$x] -ne 'O') {
-        $Path[$y] = $Path[$y].Remove($x,1).Insert($x,'I')
-        [System.Console]::Clear();$path.ForEach{$_+'OOOOOOOOOOI' | Select-String 'I'-AllMatches}
-      } else {
-        $Path[$y] = $Path[$y].Remove($x,1).Insert($x,'O')
-        [System.Console]::Clear();$path.ForEach{$_+'OOOOOOOOOOI' | Select-String 'I'-AllMatches}
-      }
-      $MoreChangesToProcess = $true
-    }
-  }
-  $Insides = $path | select-String 'I' -AllMatches
-  $Insides.LineNumber.ForEach{
-    $y = $_-1
-    $LineInsides = $Path[$y] | Select-String 'I' -AllMatches
-    $LineInsides.Matches.ForEach{
-      $x = $_.Index
-      if ($Path[$y][$x-1] -eq 'O' -or $Path[$y][$x+1] -eq 'O' -or $Path[$y-1][$x] -eq 'O' -or $Path[$y+1][$x] -eq 'O') {
-        $Path[$y] = $Path[$y].Remove($x,1).Insert($x,'O')
-        [System.Console]::Clear();$path.ForEach{$_+'OOOOOOOOOOI' | Select-String 'I'-AllMatches}
-        $MoreChangesToProcess = $true
-      }
-    }
-  }
-}
 $Result = ($path | select-String 'I' -AllMatches).Matches.count
-# $path -replace '\|', '┃'
-# $path -replace '-','━'
-# $path -replace 'L','┗'
-# $path -replace 'J','┛'
-# $path -replace '7','┓'
-# $path -replace 'F','┏'
-# $path -replace '','━┃┏┓┗┛'
-# $path.ForEach{$_+'OOOOOOOOOOI' | Select-String 'I'-AllMatches}
 
 Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
 Write-Host $Result
