@@ -13,8 +13,8 @@ $Path = [ordered]@{}
 $Position = [PSCustomObject]@{X = 0;Y = 0}
 $MinX = $MaxX = $MinY = $MaxY = 0
 
-[string[]] $Data = Get-Content -Path $PSScriptRoot\DataDemo.txt -ErrorAction Stop
-# [string[]] $Data = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
+# [string[]] $Data = Get-Content -Path $PSScriptRoot\DataDemo.txt -ErrorAction Stop
+[string[]] $Data = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
 for ($i = 0; $i -lt $Data.Count; $i++) {
   [string]$Move, [int]$MoveAmount, $Color = $Data[$i].Split(' ')
   while ($MoveAmount -gt 0) {
