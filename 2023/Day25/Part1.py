@@ -3,10 +3,11 @@ import networkx as nx # https://networkx.org/documentation/stable/reference/algo
 
 Connections = []
 
-with open(os.path.join(os.path.dirname(__file__), 'DataDemo.txt'), 'r') as Data:
+# with open(os.path.join(os.path.dirname(__file__), 'DataDemo.txt'), 'r') as Data:
+with open(os.path.join(os.path.dirname(__file__), 'Data.txt'), 'r') as Data:
 	for DataLine in Data:
-		Component1, Other_Components = DataLine.split(":")
-		for Component in Other_Components.strip().split(' '):
+		Component1, OtherComponents = DataLine.split(":")
+		for Component in OtherComponents.strip().split(' '):
 			Connections.append([Component1.strip(), Component.strip()])
 NXGraph = nx.Graph(Connections)
 EdgesToRemove = nx.minimum_edge_cut(NXGraph)
@@ -15,3 +16,4 @@ Split1, Split2 = nx.connected_components(NXGraph)
 Result = len(Split1) * len(Split2)
 
 print(Result)
+# Correct answer = 600225 (54 for testdata)
