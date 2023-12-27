@@ -6,8 +6,9 @@ $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 $multiplyfactor = 3
 $ReplaceInput = @{'?'='U';'#'='B';'.'='W'} # The original input had characters that are hard to handle in regex so I replace them with Unknown, Black, White
 
-[string[]] $Data = Get-Content -Path $PSScriptRoot\DataDemo.txt -ErrorAction Stop
-# [string[]] $Data = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
+$ProgressCount = 0
+# [string[]] $Data = Get-Content -Path $PSScriptRoot\DataDemo.txt -ErrorAction Stop
+[string[]] $Data = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
 foreach ($DataLine in $Data) {
   $Puzzle, $SolutionString = $DataLine.Split(' ')
   $Puzzle = @($Puzzle)*$multiplyfactor -join '?'
@@ -86,48 +87,48 @@ foreach ($DataLine in $Data) {
     $ResultPieces = 1
     for ($p = 0; $p -lt $PuzzlePieces.Count; $p++) {
       # BruteForce
-      $Indices = @{}
       $PuzzlePiece = $PuzzlePieces[$p]
       $SolutionStringPiece = $SolutionStringPieces[$p]
-      $SolutionArrayPiece = $SolutionStringPiece.Split(',')
-      $SolutionStringPieceOffsets = $SolutionStringPiece -replace '\d+', '0'
-      $MovingPiece = $SolutionArrayPiece.Count - 1
+
       $Stack = [System.Collections.Stack]::New()
-      $Stack.Push(($SolutionStringPieceOffsets, $MovingPiece))
+      $Stack.Push(($PuzzlePiece, $SolutionStringPiece.Split(','), ([int]$ResultPiece = 0)))
       while ($Stack.Count -gt 0) {
-        $SolutionStringPieceOffsets, $MovingPiece = $Stack.Pop()
-        [int[]]$SolutionArrayPieceOffsets = $SolutionStringPieceOffsets.Split(',')
-        $SolutionPattern = '^[UW]*'
-        for ($i = 0; $i -lt $SolutionArrayPiece.Count-1; $i++) {
-          $SolutionPattern += ".{$($SolutionArrayPieceOffsets[$i])}([BU]{$($SolutionArrayPiece[$i])})[UW]+"
-        }
-        $SolutionPattern += ".{$($SolutionArrayPieceOffsets[$i])}([BU]{$($SolutionArrayPiece[-1])})[UW]*$"
-        $MatchResult = [Regex]::Matches($PuzzlePiece, $SolutionPattern, 'RightToLeft').Groups.Where{$_.Value -ne $PuzzlePiece} | Select-Object Index, Length
-        if ($MatchResult) {
-          $CurrentCombination = $PuzzlePiece
-          $MatchResult.ForEach{$CurrentCombination = $CurrentCombination.Remove($_.Index, $_.Length).Insert($_.Index, 'B'*$_.Length)}
-          if ($CurrentCombination -match ($SolutionPattern -replace '\.{\d+}', '')) {
-            if (!$Indices[$MatchResult.Index -join ',']) {
-              $Indices[$MatchResult.Index -join ',']++ # New Solution
-            }
-            $MovingPiece = $SolutionArrayPiece.Count - 1
-          }
-          $SolutionArrayPieceOffsets[$MovingPiece]++
-          $Stack.Push((($SolutionArrayPieceOffsets -join ','), $MovingPiece))
+        [string]$PuzzlePiece, [int[]]$SolutionArrayPiece, [int]$currentResultPiece = $Stack.Pop()
+        # If there are no more blacks in the solution that is only okay if there are no more blacks in the puzzle as well
+        if (!$SolutionArrayPiece) {
+          if ($PuzzlePiece -notmatch 'B') {$currentResultPiece++}
         } else {
-          $SolutionArrayPieceOffsets[$MovingPiece] = 0
-          $MovingPiece--
-          $SolutionArrayPieceOffsets[$MovingPiece]++
-          if ($MovingPiece -ge 0) {
-            $Stack.Push((($SolutionArrayPieceOffsets -join ','), $MovingPiece))
+          [string]$SolutionPattern = '^[UW]*'
+          for ($i = 0; $i -lt $SolutionArrayPiece.Count-1; $i++) {
+            $SolutionPattern += "([BU]{$($SolutionArrayPiece[$i])})[UW]+"
+          }
+          $SolutionPattern += "([BU]{$($SolutionArrayPiece[-1])})[UW]*$"
+          if ([Regex]::Matches($PuzzlePiece, $SolutionPattern, 'RightToLeft').Count -gt 0) {
+            [int]$StartPositionMin = [Regex]::Matches($PuzzlePiece, $SolutionPattern, 'RightToLeft').Groups[1].Index
+            [int]$StartPositionMax = [Regex]::Matches($PuzzlePiece, $SolutionPattern).Groups[1].Index
+
+            for ($StartPosition = $StartPositionMin; $StartPosition -le $StartPositionMax; $StartPosition++) {
+              [int]$EndPosition = $StartPosition + ($SolutionArrayPiece[0] -1)
+              [bool]$BlacksBeforeStartPosition = [Regex]::Matches($PuzzlePiece,'B').Where{$_.Index -lt $StartPosition}.Count -gt 0
+              [bool]$BlacksDirectlyAfterEndPosition = [Regex]::Matches($PuzzlePiece,'B').Where{$_.Index -eq ($EndPosition+1)}.Count -gt 0
+              [bool]$WhitesInRange = [Regex]::Matches($PuzzlePiece,'W').Where{$_.Index -in @($StartPosition..$EndPosition)}.Count -gt 0
+              if (!$BlacksBeforeStartPosition -and !$BlacksDirectlyAfterEndPosition -and !$WhitesInRange) {
+                # Black group possibility found! Continue 1 group further
+                [string]$PuzzlePieceNext = $PuzzlePiece.Substring([System.Math]::Min($EndPosition+2, $PuzzlePiece.Length))
+                [int[]]$SolutionArrayPieceNext = $SolutionArrayPiece | Select-Object -SkipIndex 0
+                $Stack.Push(($PuzzlePieceNext, $SolutionArrayPieceNext, $currentResultPiece))
+              }
+            }
           }
         }
+        $ResultPiece += $currentResultPiece
       }
-      $ResultPieces*=$Indices.Count
+      $ResultPieces*=$ResultPiece
     }
     $Result += $ResultPieces
   }
-  $Result
+  $ProgressCount++
+  Write-Host "$ProgressCount, $Result, $($stopwatch.Elapsed.TotalSeconds)"
 }
 
 Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
