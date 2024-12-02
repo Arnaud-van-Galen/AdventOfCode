@@ -20,4 +20,4 @@ for ($i = 0; $i -lt $Left.Count; $i++) {
 
 Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
 Write-Host $Result
-# Correct answer = 54159 (142 for testdata)
+# Correct answer = 1530215 (11 for testdata)

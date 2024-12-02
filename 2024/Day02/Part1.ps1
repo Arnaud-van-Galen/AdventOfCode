@@ -3,19 +3,23 @@ Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 [int] $Result = 0
-$Left = @()
-$Right = @()
 
 # $Data = Get-Content -Path $PSScriptRoot\DataDemo.txt -ErrorAction Stop
 $Data = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
+
 foreach ($DataLine in $Data) {
-  $Left += $DataLine.Split('   ')[0]
-  $Right += $DataLine.Split('   ')[1]
-}
-for ($i = 0; $i -lt $Left.Count; $i++) {
-  $Result += $Right.Where{$_ -eq $Left[$i]}.Count * $Left[$i]
+  $Levels = $DataLine.Split(' ')
+  if ([int]$Levels[1] -lt [int]$Levels[0]) {[Array]::Reverse($Levels)} # Make sure the levels should be increasing
+  $Safe = $true
+  for ($i = 1; $i -lt $Levels.Count; $i++) {
+    if ($Levels[$i] - $Levels[$i-1] -notin (1..3)) {
+      $Safe = $false
+      continue
+    }
+  }
+  if ($Safe) {$Result++}
 }
 
 Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
 Write-Host $Result
-# Correct answer = 26800609 (31 for testdata)
+# Correct answer = 680 (2 for testdata)
