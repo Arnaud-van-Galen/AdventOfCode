@@ -44,7 +44,7 @@ for ($i = 0; $i -lt $PlannedRouteDic.Count; $i++) {
 		$key = "$GuardY,$GuardX,$MoveIndex"
 		if ($altRoute.ContainsKey($key)) {
 			$SuccesfulBlocks["$BlockY,$BlockX"] = $true
-			Write-Host "altroute with block at $BlockY, $BlockX works. $($SuccesfulBlocks.Count) total unique blocks"
+			# Write-Host "altroute with block at $BlockY, $BlockX works. $($SuccesfulBlocks.Count) total unique blocks"
 			break
 		}
 		$altRoute[$key] = $true
