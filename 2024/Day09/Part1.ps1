@@ -33,8 +33,8 @@ for ($i = 0; $i -lt $EmptyBlocksPos; $i++) {
 	if ($EmptyPos -ge $FilledPos) {continue}
 	$BlockLayout[$EmptyBlocks[$i]]=$BlockLayout[$FilledBlocks[$FilledBlocksPos-1-$i]]
 	$BlockLayout[$FilledBlocks[$FilledBlocksPos-1-$i]] = $null
+	# if ($i % 100 -eq 0) {((0..($blocklayout.count-1)).foreach{$blocklayout[$_] ?? "."} -join '').trimend('.');[System.Console]::Clear()}
 }
-# ((0..($blocklayout.count-1)).foreach{$blocklayout[$_] ?? "."} -join '').trimend('.')
 for ($i = 0; $i -lt $BlockLayout.Count; $i++) {
 	if ($null -eq $BlockLayout[$i]) {continue}
 	$Result += $i*$BlockLayout[$i]
