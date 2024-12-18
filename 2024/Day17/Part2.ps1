@@ -1,6 +1,10 @@
+# Hurrying to the next challenge. Correct solution is in Part2PlayGarden.ps1.
+# ToDo: Mix the nice structure and variable getting here with the correct program in PlayGarden
+
 Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 [System.Console]::Clear()
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+
 # $Data = Get-Content -Path $PSScriptRoot\DataDemo2.txt -ErrorAction Stop
 $Data = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
 
@@ -22,7 +26,8 @@ $Program = (2,4,1,6,7,5,4,4,1,7,0,3,5,5,3,0)
 	555555555555555,	# 5,2,5,2,7,6,5,2,0,4,2,7,0,4,1,1,0 	Too high. Length 17 instead of 16
 	55555555555555,		# 5,2,5,2,5,1,4,0,6,1,2,0,5,0,6,0			Too high, but length 16 starting with 5 instead of 2
 	44444444444444,		# 2,5,2,1,6,0,0,0,5,7,7,1,1,0,3,0			Too high, but starting with 2
-	41000000000000
+	16313251724384,
+	130506013795088
 )
 foreach ($i in $Guesses) {
 	$RegisterA, $RegisterB, $RegisterC, $InstructionPointer,$Result = $i,0,0,0,@()
@@ -49,6 +54,6 @@ $Program.Length, $Result.Length
 # Get-MyVariables
 Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
 Write-Host "Calculated answer: $($Result -join ',')"
-Write-Host "Correct answer: 16321892311824 < ??? > 130506013795088 (117440 for testdata)"
+Write-Host "Correct answer: 47910079998866 (117440 for testdata)"
 Write-Host "To run this command on Ubuntu WSL: wsl pwsh -NoLogo -NonInteractive -NoProfile -NoProfileLoadTime -File $($PSCommandPath.Replace('C:','/mnt/c').Replace('\','/'))"
 Write-Host "To run this command on Windows:        pwsh -NoLogo -NonInteractive -NoProfile -NoProfileLoadTime -File $($PSCommandPath.Replace('/mnt/c','C:').Replace('/','\'))"
