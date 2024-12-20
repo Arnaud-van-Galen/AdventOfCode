@@ -49,3 +49,34 @@ $data = "[1,[2,[3,[4,[5,6,7]]]],8,9]"
 $datePattern = [Regex]::new("\[*\]")
 $matches = $datePattern.Matches($data)
 $matches.Value
+
+#MazeSolver (with walls around it)
+$SearchCounter=0
+[Int64] $Result = [int]::MaxValue
+$GridHeight = $Data.Count
+$GridWidth = $Data[0].Length
+$Directions = (-1*$GridWidth), 1, $GridWidth, -1
+$MapString = $Data -join ''
+$StartIndex = [regex]::Matches($MapString, 'S').Index
+$EndIndex = [regex]::Matches($MapString, 'E').Index
+$Progress = @($null)*$GridHeight*$GridWidth
+for ($p = 0; $p -lt $Progress.Count; $p++) {$Progress[$p] = [int]::MaxValue}
+
+$MazeSearcher = [System.Collections.Stack]::new() # Keep track of Position and Score
+$MazeSearcher.Push(($StartIndex, 0))
+While ($MazeSearcher.Count -gt 0) {
+	$SearchCounter++
+	$Position, $Score = $MazeSearcher.Pop()
+	if ($Score -lt $Progress[$Position]) {
+		$Progress[$Position] = $Score
+		if ($Position -eq $EndIndex) {
+			$Result = $Score
+		} else {
+			foreach ($i in 0..($Directions.Count-1)) {
+				$NextPosition = $Position + $Directions[$i]
+				$NextScore = $Score + 1
+				if ($MapString[$NextPosition] -ne '#' -and $NextScore -lt $Result) { $MazeSearcher.Push(($NextPosition, $NextScore))}
+			}
+		}
+	}
+}
