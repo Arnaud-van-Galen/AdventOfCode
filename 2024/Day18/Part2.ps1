@@ -6,7 +6,7 @@ $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 # $BytesFallen = 12 # (12 for testdata, 1024 for real data)
 $Data = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
 $GridSize = 71 # (0 to 6 = 7 for testdata, 0 to 70 = 71 for real data)
-$BytesFallen = 2993 # (12 for testdata, 1024 for real data). Found by "halving" the difference and seeing if $Data[$EndIndex] -lt intmaxvalue. Should be easy to program and probably fastest from the back
+$BytesFallen = 2993 # (12 for testdata, 1024 for real data). Found by "halving" the difference and seeing if $Data[$EndIndex] -lt intmaxvalue. Should be easy to program and probably fastest from the back. See Part1CreatiefCheaten.ps1 for halving code
 
 $GridHeight = $GridSize
 $GridWidth = $GridSize

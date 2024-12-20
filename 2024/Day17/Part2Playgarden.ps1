@@ -3,7 +3,8 @@ Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 # $Program = (0,3,5,4,3,0)
-$Program = (2,4,1,6,7,5,4,4,1,7,0,3,5,5,3,0)
+$Program = (2,4,1,6,7,5,4,4,1,7,0,3,5,5,3,0) # Arnaud
+# $Program = (2,4,1,2,7,5,4,7,1,3,5,5,0,3,3,0) # Aki
 $Guess = 0
 while ($Result.Count -le $Program.Count) {
 	$RegisterA, $RegisterB, $RegisterC, $InstructionPointer, $Result = $Guess, 0, 0, 0, @()
