@@ -14,7 +14,7 @@ function LoadLevel { param ([int]$Level)
 	$Global:Map = $MapString.ToCharArray()
 }
 
-LoadLevel -Level 3
+LoadLevel -Level 1
 
 Write-Host "Press arrow keys to move around, 1 2 or 3 to change level or q to stop."
 while ($PressedKey.Key -ne 'q') {

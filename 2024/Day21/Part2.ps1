@@ -5,7 +5,10 @@ $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 # $Data = Get-Content -Path $PSScriptRoot\DataDemo.txt -ErrorAction Stop
 $Data = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
 
-[Int64] $Result = 0
+$Result = 0
+$DirPads = 2
+$ThanksForHelpingMeRememberGio = @{} # cache
+
 
 $NumPad = @{ 
 	'7' = @{ '8' = '>' ; '4' = 'v' }
@@ -40,7 +43,7 @@ function GraphSearcher ([string]$Start, [string]$Target, [hashtable]$Graph) {
 			if ($Path.Count -gt $MinLength) { break }
 			$MinLength = $Path.Count
 			# $FullPaths[$Path] = $NeededOnPad
-			$SimplifiedPaths += ($NeededOnPad -join '') + "A"
+			$SimplifiedPaths += ($NeededOnPad -join '') + 'A'
 		} else {
 			if ($Path.Count -gt $MinLength) { break }
 			foreach ($NextPosition in $Graph[$Position].Keys) {
@@ -66,69 +69,52 @@ function ArrayUnpacker ([array]$NestedArray) {
 	return $NestedArray[0]
 }
 
-function StepCalculator([array]$NodesToVisit, [hashtable]$Graph) {
+function NumPadCalculator([array]$NodesToVisit) {
+	$Paths = [array]::CreateInstance([array], $NodesToVisit.Count)
+	$NodesToVisit = ,'A' + $NodesToVisit
+	for ($i = 1; $i -lt $NodesToVisit.Length; $i++) {
+		$Paths[$i-1] = GraphSearcher -Start $NodesToVisit[$i-1] -Target $NodesToVisit[$i] -Graph $NumPad
+	}
+	return $Paths
+}
+
+function RecursivelyFind { param ( [string]$Design )
+	if ($ThanksForHelpingMeRememberGio.ContainsKey($Design)) { return $ThanksForHelpingMeRememberGio[$Design] } # Try to retrieve from cache
+	if ($Design -eq "") { return 1 }
+	$Count = 0
+
+	foreach ($Towel in $Towels) {	if ($Design.StartsWith($Towel)) { $Count += RecursivelyFind($Design.Substring($Towel.Length)) } }
+
+	$ThanksForHelpingMeRememberGio[$Design] = $Count # Add to cache
+	return $Count
+}
+
+
+function DirPadCalculator([string[]]$InputSequences) {
 	$AllPaths = @()
-	# $NodesToVisit = "A" + $NodesToVisit
-	foreach ($NodeToVisit in $NodesToVisit) {
-		$Paths = [array]::CreateInstance([array], $NodeToVisit.Length)
-		for ($i = 0; $i -lt $NumPadPath.Length-1; $i++) {
-			$Paths[$i] = GraphSearcher -Start $NumPadPath[$i] -Target $NumPadPath[$i+1] -Graph $DirPad
+	foreach ($NodesToVisit in $InputSequences) {
+		$Paths = [array]::CreateInstance([string], $NodesToVisit.Length)
+		$NodesToVisit = 'A' + $NodesToVisit
+		for ($i = 1; $i -lt $NodesToVisit.Length; $i++) {
+			$Paths[$i-1] = GraphSearcher -Start $NodesToVisit[$i-1] -Target $NodesToVisit[$i] -Graph $DirPad
 		}
 		$Paths = ArrayUnpacker -NestedArray $Paths
 		$AllPaths += $Paths
-		# Write-Host $NumPadPath
 	}
-	# Write-Host ($AllDirPad1Paths.ForEach{$_.Length} | Measure-Object -Minimum).Minimum
-
-	$DataLine = $To
-	$NumPadPaths = [array]::CreateInstance([array], $DataLine.Length)
-	$DataLine = $From + $DataLine
-	for ($i = 0; $i -lt $DataLine.Length-1; $i++) {
-		$NumPadPaths[$i] = GraphSearcher -Start $DataLine[$i] -Target $DataLine[$i+1] -Graph $NumPad
-	}
-	$NumPadPaths = ArrayUnpacker -NestedArray $NumPadPaths
-	# Write-Host $DataLine
-	# Write-Host ($NumPadPaths.ForEach{$_.Length} | Measure-Object -Minimum).Minimum
-
-	$AllDirPad1Paths = @()
-	foreach ($NumPadPath in $NumPadPaths) {
-		$DirPad1Paths = [array]::CreateInstance([array], $NumPadPath.Length)
-		$NumPadPath = "A" + $NumPadPath
-		for ($i = 0; $i -lt $NumPadPath.Length-1; $i++) {
-			$DirPad1Paths[$i] = GraphSearcher -Start $NumPadPath[$i] -Target $NumPadPath[$i+1] -Graph $DirPad
-		}
-		$DirPad1Paths = ArrayUnpacker -NestedArray $DirPad1Paths
-		$AllDirPad1Paths += $DirPad1Paths
-		# Write-Host $NumPadPath
-	}
-	# Write-Host ($AllDirPad1Paths.ForEach{$_.Length} | Measure-Object -Minimum).Minimum
-
-	$AllDirPad2Paths = @()
-	foreach ($AllDirPad1Path in $AllDirPad1Paths) {
-		# $AllDirPad1Path = 'v<<A>>^A<A>AvA<^AA>A<vAAA>^A'
-		$DirPad2Paths = [array]::CreateInstance([array], $AllDirPad1Path.Length)
-		$AllDirPad1Path = "A" + $AllDirPad1Path
-		for ($i = 0; $i -lt $AllDirPad1Path.Length-1; $i++) {
-			$DirPad2Paths[$i] = GraphSearcher -Start $AllDirPad1Path[$i] -Target $AllDirPad1Path[$i+1] -Graph $DirPad
-		}
-		$DirPad2Paths = ArrayUnpacker -NestedArray $DirPad2Paths
-		$AllDirPad2Paths += $DirPad2Paths
-		# Write-Host $AllDirPad1Path
-	}
-	# Write-Host (($AllDirPad2Paths.ForEach{$_.Length} | Measure-Object -Minimum).Minimum)
-
-	return (($AllDirPad2Paths.ForEach{$_.Length} | Measure-Object -Minimum).Minimum)
+	return $AllPaths
 }
 
-foreach ($DataLine in $Data) {
-	$MinLength = StepCalculator -NodesToVisit (,'A' + [string[]]$DataLine.ToCharArray()) -Graph $NumPad
-	$NumPart = [int]$Dataline.Replace('A','')
-	$Result += $MinLength * $NumPart
+foreach ($DataLine in $Data[0]) {
+	$NumPadPaths = NumPadCalculator -NodesToVisit ([string[]]$DataLine.ToCharArray())
+	DirPadCalculator -InputSequences $NumPadPaths[0]
+	# $MinLength = StepCalculator -NodesToVisit (,'A' + [string[]]$DataLine.ToCharArray()) -Graph $NumPad
+	# $NumPart = [int]$Dataline.Replace('A','')
+	# $Result += $MinLength * $NumPart
 }
 
-# Get-MyVariables
-Write-Host "Time for calculating:", $stopwatch.Elapsed.TotalSeconds
-Write-Host "Calculated answer: $Result"
-Write-Host "Correct answer: 105458 (126384 for testdata)"
-Write-Host "To run this command on Ubuntu WSL: wsl pwsh -NoLogo -NonInteractive -NoProfile -NoProfileLoadTime -File $($PSCommandPath.Replace('C:','/mnt/c').Replace('\','/'))"
-Write-Host "To run this command on Windows:        pwsh -NoLogo -NonInteractive -NoProfile -NoProfileLoadTime -File $($PSCommandPath.Replace('/mnt/c','C:').Replace('/','\'))"
+Get-MyVariables
+Write-Host 'Time for calculating:', $stopwatch.Elapsed.TotalSeconds
+Write-Host 'Calculated answer:', $Result
+Write-Host 'Correct answer: ??? (XXX for testdata)'
+Write-Host 'To run this command on Ubuntu WSL: wsl pwsh -NoLogo -NonInteractive -NoProfile -NoProfileLoadTime -File', $PSCommandPath.Replace('C:','/mnt/c').Replace('\','/')
+Write-Host 'To run this command on Windows:        pwsh -NoLogo -NonInteractive -NoProfile -NoProfileLoadTime -File', $PSCommandPath.Replace('/mnt/c','C:').Replace('/','\')
