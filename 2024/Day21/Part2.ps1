@@ -2,8 +2,8 @@ Get-MyVariables | Remove-Variable -ErrorAction SilentlyContinue
 Set-StrictMode -Version Latest
 [System.Console]::Clear()
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-$Data = Get-Content -Path $PSScriptRoot\DataDemo.txt -ErrorAction Stop
-# $Data = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
+# $Data = Get-Content -Path $PSScriptRoot\DataDemo.txt -ErrorAction Stop
+$Data = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
 
 $Result = 0
 $DirPads = 2
@@ -30,8 +30,8 @@ $DirPad = @{
 }
 
 $GraphCache = @{}
-function GraphSearcher ([string]$Start, [string]$Target, [hashtable]$Graph) {
-	if ($GraphCache.ContainsKey(($Start,$Target,$Graph))) { return $GraphCache[($Start,$Target,$Graph)] } # Try to retrieve from cache
+function GraphSearcher ([string]$Start, [string]$Target, [hashtable]$Graph, [bool]$UseCache = $false) {
+	if ($UseCache -and $GraphCache.ContainsKey(($Start,$Target))) { return $GraphCache[($Start,$Target)] } # Try to retrieve from cache
 
 	# $FullPaths = @{}
 	$SimplifiedPaths = @()
@@ -57,7 +57,7 @@ function GraphSearcher ([string]$Start, [string]$Target, [hashtable]$Graph) {
 		}
 	}
 	# return $FullPaths
-	$GraphCache[($Start,$Target,$Graph)] = $SimplifiedPaths # Add to cache
+	if ($UseCache) { $GraphCache[($Start,$Target)] = $SimplifiedPaths } # Add to cache
 	return $SimplifiedPaths
 }
 function ArrayUnpacker ([array]$NestedArray) {
@@ -75,19 +75,27 @@ function NumPadCalculator([array]$NodesToVisit) {
 	$Paths = [array]::CreateInstance([array], $NodesToVisit.Count)
 	$NodesToVisit = ,'A' + $NodesToVisit
 	for ($i = 1; $i -lt $NodesToVisit.Length; $i++) {
-		$Paths[$i-1] = GraphSearcher -Start $NodesToVisit[$i-1] -Target $NodesToVisit[$i] -Graph $NumPad
+		$Paths[$i-1] = GraphSearcher -Start $NodesToVisit[$i-1] -Target $NodesToVisit[$i] -Graph $NumPad -UseCache $false
 	}
 	return $Paths
 }
 
-function DirPadCalculator([string[]]$InputSequences) {
+function DirPadCalculator([array]$InputSequences) {
+	$Paths = [array]::CreateInstance([array], $NodesToVisit.Count)
+	$NodesToVisit = 'A' + $NodesToVisit
+	for ($i = 1; $i -lt $NodesToVisit.Length; $i++) {
+		$Paths[$i-1] = GraphSearcher -Start $NodesToVisit[$i-1] -Target $NodesToVisit[$i] -Graph $DirPad -UseCache $true
+	}
+	return $Paths
+}
+function DirPadCalculatorMultiLevel([array]$InputSequences) {
 	$AllPaths = @()
 	foreach ($NodesToVisit in $InputSequences) {
 		$Paths = [array]::CreateInstance([string[]], $NodesToVisit.Length)
 		$NodesToVisit = 'A' + $NodesToVisit
 		for ($i = 1; $i -lt $NodesToVisit.Length; $i++) {
 			# $Paths[$i-1] = (GraphSearcher -Start $NodesToVisit[$i-1] -Target $NodesToVisit[$i] -Graph $DirPad).Split(' ')
-			$Paths[$i-1] = GraphSearcher -Start $NodesToVisit[$i-1] -Target $NodesToVisit[$i] -Graph $DirPad
+			$Paths[$i-1] = GraphSearcher -Start $NodesToVisit[$i-1] -Target $NodesToVisit[$i] -Graph $DirPad -UseCache $true
 		}
 		$Paths = ArrayUnpacker -NestedArray $Paths
 		$AllPaths += $Paths
@@ -97,7 +105,7 @@ function DirPadCalculator([string[]]$InputSequences) {
 
 foreach ($DataLine in $Data[0]) {
 	$NumPadPaths = NumPadCalculator -NodesToVisit ([string[]]$DataLine.ToCharArray())
-	$AllPaths1 = DirPadCalculator -InputSequences $NumPadPaths
+	$AllPaths1 = DirPadCalculator -InputSequences (ArrayUnpacker -NestedArray $NumPadPaths)
 	$AllPaths2 = DirPadCalculator -InputSequences $AllPaths1
 	# $MinLength = StepCalculator -NodesToVisit (,'A' + [string[]]$DataLine.ToCharArray()) -Graph $NumPad
 	# $NumPart = [int]$Dataline.Replace('A','')

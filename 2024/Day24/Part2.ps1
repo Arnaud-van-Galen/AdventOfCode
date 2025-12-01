@@ -6,9 +6,9 @@ $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 $Data = Get-Content -Path $PSScriptRoot\Data.txt -ErrorAction Stop
 
 $GateLines = $data.Where{ $_ -match '->'}
-$BadGateLines = $GateLines.Where{ $_ -notmatch '([a-z]{3} XOR [a-z]{3} -> z\d{2})|[xy]\d{2} AND [xy]\d{2} -> [a-z]{3}|[xy]\d{2} XOR [xy]\d{2} -> [a-z]{3}|[a-z]{3} OR [a-z]{3} -> [a-z]{3}|[a-z]{3} AND [a-z]{3} -> [a-z]{3}' }
+$BadGateLines = $GateLines.Where{ $_ -notmatch '[a-z]{3} XOR [a-z]{3} -> z\d{2}|[xy]\d{2} AND [xy]\d{2} -> [a-z]{3}|[xy]\d{2} XOR [xy]\d{2} -> [a-z]{3}|[a-z]{3} OR [a-z]{3} -> [a-z]{3}|[a-z]{3} AND [a-z]{3} -> [a-z]{3}' }
 $BadWires =  $BadGateLines.ForEach{ $_.Split(' -> ')[1] } | Sort-Object
-Write-Host "This is actually a REALLY good way to get started to find the bad gatelines! $(($BadWires -join ','))"
+Write-Host "This is actually a REALLY good way to get started to find the bad gatelines! It will find 6 out of 8 correctly. $(($BadWires -join ','))"
 
 $FoundInExcel = 'ggn, z10, jcb, ndw, grm, z32, twr, z39'
 $Reordered = $FoundInExcel.Split(',').Trim() | Sort-Object
