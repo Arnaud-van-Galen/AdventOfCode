@@ -21,7 +21,7 @@ $Ranges += $ToDoRanges.Pop() # Start with one range to compare against
 
 While ($ToDoRanges.Count -gt 0) {
 	$ToDoRange = $ToDoRanges.Pop()
-	Write-Host "Processing ranges, $($ToDoRanges.Count) to go... Now processing range $($ToDoRange.Min)-$($ToDoRange.Max). $($Ranges.Count) ranges so far."
+	# Write-Host "Processing ranges, $($ToDoRanges.Count) to go... Now processing range $($ToDoRange.Min)-$($ToDoRange.Max). $($Ranges.Count) ranges so far."
 	$HasOverlap = $false
 	foreach ($Range in $Ranges) {
 		# Write-Host "Comparing to range $($Range.Min)-$($Range.Max)..."
