@@ -11,12 +11,9 @@ $Ranges = @()
 
 foreach ($DataLine in $Data) {
 	if ($DataLine -match '(?<Min>\d*)-(?<Max>\d*)') {
-		# $Ranges += [PSCustomObject]@{Min = [int64]$Matches.Min; Max = [int64]$Matches.Max	}
 		$ToDoRanges.Push([PSCustomObject]@{Min = [int64]$Matches.Min; Max = [int64]$Matches.Max	})
 	}
 }
-# $Ranges | Sort-Object { $_.Max - $_.Min } | ForEach-Object { $ToDoRanges.Push($_) } # Make sure the largest ranges are processed first. I think a queue where I put largest first and add leftovers to the end would be better
-# $Ranges = @()
 $Ranges += $ToDoRanges.Pop() # Start with one range to compare against
 
 While ($ToDoRanges.Count -gt 0) {
@@ -47,8 +44,21 @@ While ($ToDoRanges.Count -gt 0) {
 	}
 	if (-not $HasOverlap) {$Ranges += $ToDoRange}
 }
+
+# Bonus, Combine all ranges that overlap into single ranges to reduce the number of ranges. I already went way overboard with the stack and overlapping logic above, but this is fun.
+$RangesToCombine = $Ranges | Sort-Object Min
+$Ranges = ,$RangesToCombine[0]
+for ($RangeToCombine = 1; $RangeToCombine -lt $RangesToCombine.Count; $RangeToCombine++) {
+	if ($RangesToCombine[$RangeToCombine].Min -eq $Ranges[-1].Max+1) {
+		$Ranges[-1].Max = $RangesToCombine[$RangeToCombine].Max
+	} else {
+		$Ranges += $RangesToCombine[$RangeToCombine] | ConvertTo-Json | ConvertFrom-Json # Fake deepcopy to avoid reference issues that would modify the $rangesToCombine array
+	}
+}
+Write-Host "Reduced ranges from $($RangesToCombine.Count) to $($Ranges.Count) by combining adjacent ranges. Display by typing `$RangesToCombine and `$Ranges"
+
 foreach ($Range in $Ranges) {
-	$Result += ($Range.Max - $Range.Min + 1) # Add full range size to result, will subtract overlaps later
+	$Result += ($Range.Max - $Range.Min + 1)
 }
 
 Get-MyVariables
